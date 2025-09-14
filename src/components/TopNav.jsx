@@ -1,5 +1,14 @@
 import React from "react";
-import { AppBar, Toolbar, IconButton, Typography, Button, Box, Tooltip } from "@mui/material";
+
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Button,
+  Box,
+  Tooltip,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
@@ -16,11 +25,15 @@ function TopNav({ user, onLogin, onLogout }) {
     alignItems: "center",
     gap: 6,
     padding: "6px 10px",
-    borderRadius: 8
+    borderRadius: 8,
   };
 
   return (
-    <AppBar position="sticky" elevation={1}>
+    <AppBar
+      position="sticky"
+      elevation={1}
+      style={{ backgroundColor: "#302e2f" }}
+    >
       <Toolbar sx={{ gap: 1 }}>
         <IconButton edge="start" color="inherit" aria-label="menu">
           <MenuIcon />
@@ -31,15 +44,25 @@ function TopNav({ user, onLogin, onLogout }) {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 1 }}>
-          <Link to="/" style={navLinkStyle}><HomeIcon fontSize="small" /> Home</Link>
-          <Link to="/objects" style={navLinkStyle}><Inventory2Icon fontSize="small" /> Objects</Link>
-          <Link to="/references" style={navLinkStyle}><BookmarksIcon fontSize="small" /> References</Link>
+          <Link to="/" style={navLinkStyle}>
+            <HomeIcon fontSize="small" /> Home
+          </Link>
+          <Link to="/objects" style={navLinkStyle}>
+            <Inventory2Icon fontSize="small" /> Objects
+          </Link>
+          <Link to="/references" style={navLinkStyle}>
+            <BookmarksIcon fontSize="small" /> References
+          </Link>
         </Box>
 
         <Box sx={{ flexGrow: 0 }} />
         {user ? (
           <Tooltip title={user.email || user.displayName || "Signed in"}>
-            <Button color="inherit" onClick={onLogout} startIcon={<LogoutIcon />}>
+            <Button
+              color="inherit"
+              onClick={onLogout}
+              startIcon={<LogoutIcon />}
+            >
               Sign out
             </Button>
           </Tooltip>
