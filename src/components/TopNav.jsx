@@ -16,6 +16,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import { Link } from "react-router-dom";
+import PeopleIcon from "@mui/icons-material/People";
 
 function TopNav({ user, onLogin, onLogout }) {
   const navLinkStyle = {
@@ -44,15 +45,28 @@ function TopNav({ user, onLogin, onLogout }) {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 1 }}>
-          <Link to="/" style={navLinkStyle}>
-            <HomeIcon fontSize="small" /> Home
-          </Link>
-          <Link to="/objects" style={navLinkStyle}>
-            <Inventory2Icon fontSize="small" /> Objects
-          </Link>
-          <Link to="/references" style={navLinkStyle}>
-            <BookmarksIcon fontSize="small" /> References
-          </Link>
+          {user && (
+            <>
+              <Link to="/" style={navLinkStyle}>
+                <HomeIcon fontSize="small" /> Home
+              </Link>
+              {(user.role === "edit" || user.role === "superadmin" || user.role === "view") && (
+                <Link to="/objects" style={navLinkStyle}>
+                  <Inventory2Icon fontSize="small" /> Objects
+                </Link>
+              )}
+              {user.role === "superadmin" && (
+                <Link to="/users" style={navLinkStyle}>
+                  <PeopleIcon fontSize="small" /> Users
+                </Link>
+              )}
+              {(user.role === "edit" || user.role === "superadmin" || user.role === "view") && (
+                <Link to="/references" style={navLinkStyle}>
+                  <BookmarksIcon fontSize="small" /> References
+                </Link>
+              )}
+            </>
+          )}
         </Box>
 
         <Box sx={{ flexGrow: 0 }} />

@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Box, TextField, Button, List, ListItem, ListItemText, CircularProgress, Snackbar, Alert, Typography, Fab, IconButton } from "@mui/material";
+import { Container, Box, TextField, Button, List, ListItem, ListItemText, CircularProgress, Snackbar, Alert, Typography, Fab, IconButton, MenuItem, FormControl, InputLabel, Select, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { db } from "../firebase";
 import {
   addDoc,
@@ -15,6 +18,9 @@ import {
 } from "firebase/firestore";
 
 function ObjectsPage({ user }) {
+  // Permission logic
+  const role = user?.role || "";
+  const canEdit = role === "edit" || role === "superadmin";
   // ...existing code...
   const importCSV = async (event) => {
     const file = event.target.files[0];
@@ -78,6 +84,18 @@ function ObjectsPage({ user }) {
   const [loading, setLoading] = useState(true);
   const [objects, setObjects] = useState([]);
   const [qText, setQText] = useState("");
+  // Filter states
+  const [filterType, setFilterType] = useState("");
+  const [filterAstroType, setFilterAstroType] = useState("");
+  const [filterDating, setFilterDating] = useState("");
+  const [filterLocation, setFilterLocation] = useState("");
+
+  // Get unique values for dropdowns
+  const typeOptions = useMemo(() => Array.from(new Set(objects.map(o => o.type).filter(Boolean))).sort(), [objects]);
+  const astroTypeOptions = useMemo(() => Array.from(new Set(objects.map(o => o.astronomicalType).filter(Boolean))).sort(), [objects]);
+  const datingOptions = useMemo(() => Array.from(new Set(objects.map(o => o.dating).filter(Boolean))).sort(), [objects]);
+  const locationOptions = useMemo(() => Array.from(new Set(objects.map(o => o.actualLocation).filter(Boolean))).sort(), [objects]);
+
   const [form, setForm] = useState({
     no: "",
     name: "",
@@ -126,22 +144,29 @@ function ObjectsPage({ user }) {
   }, []);
 
   const filtered = useMemo(() => {
+    let result = objects;
     const t = qText.trim().toLowerCase();
-    if (!t) return objects;
-    return objects.filter((o) =>
-      [
-        o.name,
-        o.type,
-        o.astronomicalType,
-        o.astronomicalUse,
-        o.content,
-        o.findingLocation,
-        o.actualLocation,
-      ]
-        .filter(Boolean)
-        .some((v) => String(v).toLowerCase().includes(t))
-    );
-  }, [qText, objects]);
+    if (t) {
+      result = result.filter((o) =>
+        [
+          o.name,
+          o.type,
+          o.astronomicalType,
+          o.astronomicalUse,
+          o.content,
+          o.findingLocation,
+          o.actualLocation,
+        ]
+          .filter(Boolean)
+          .some((v) => String(v).toLowerCase().includes(t))
+      );
+    }
+    if (filterType) result = result.filter(o => o.type === filterType);
+    if (filterAstroType) result = result.filter(o => o.astronomicalType === filterAstroType);
+    if (filterDating) result = result.filter(o => o.dating === filterDating);
+    if (filterLocation) result = result.filter(o => o.actualLocation === filterLocation);
+    return result;
+  }, [qText, objects, filterType, filterAstroType, filterDating, filterLocation]);
 
   const handleAdd = async () => {
     if (!form.name.trim()) {
@@ -245,25 +270,21 @@ function ObjectsPage({ user }) {
     }
   };
 
-  if (!user) {
-    return (
-      <Container sx={{ py: 6, textAlign: "center" }}>
-        <Typography variant="h6" gutterBottom>
-          You must sign in to view Objects.
-        </Typography>
-      </Container>
-    );
+  if (!user || !role) {
+    return null;
   }
 
   return (
     <Container sx={{ py: 4 }}>
+      {/* Top row: search, export, import (full width) */}
       <Box
         sx={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto auto",
-          gap: 1,
-          alignItems: "center",
-          mb: 2,
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: (role === 'superadmin' ? '1fr auto auto' : '1fr auto') },
+          gap: 2,
+          alignItems: 'center',
+          mb: 1,
+          width: '100%',
         }}
       >
         <TextField
@@ -274,16 +295,81 @@ function ObjectsPage({ user }) {
           InputProps={{
             startAdornment: <SearchIcon sx={{ mr: 1, opacity: 0.6 }} />,
           }}
+          sx={{ width: '100%' }}
         />
-        <Button variant="outlined" onClick={exportCSV} sx={{ whiteSpace: 'nowrap' }}>Export CSV</Button>
-        <Button variant="outlined" component="label" sx={{ whiteSpace: 'nowrap' }}>
-          Import CSV
-          <input type="file" accept=".csv" hidden onChange={importCSV} />
-        </Button>
+        {(role === 'view' || role === 'edit' || role === 'superadmin') && (
+          <Tooltip title="Export CSV">
+            <IconButton color="primary" onClick={exportCSV} sx={{}}>
+              <FileDownloadIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        {role === 'superadmin' && (
+          <Button variant="outlined" component="label" sx={{ whiteSpace: 'nowrap' }}>
+            Import CSV
+            <input type="file" accept=".csv" hidden onChange={importCSV} />
+          </Button>
+        )}
       </Box>
 
-      {/* Inline Add/Edit Form */}
-      {showForm && (
+      {/* Filter row: full width below top row */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(4, 1fr)' },
+          gap: 2,
+          mb: 2,
+          width: '100%',
+        }}
+      >
+        <FormControl size="small" sx={{ width: '100%' }}>
+          <InputLabel>Object Type</InputLabel>
+          <Select
+            label="Object Type"
+            value={filterType}
+            onChange={e => setFilterType(e.target.value)}
+          >
+            <MenuItem value=""><em>All</em></MenuItem>
+            {typeOptions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <FormControl size="small" sx={{ width: '100%' }}>
+          <InputLabel>Astronomical Type</InputLabel>
+          <Select
+            label="Astronomical Type"
+            value={filterAstroType}
+            onChange={e => setFilterAstroType(e.target.value)}
+          >
+            <MenuItem value=""><em>All</em></MenuItem>
+            {astroTypeOptions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <FormControl size="small" sx={{ width: '100%' }}>
+          <InputLabel>Dating</InputLabel>
+          <Select
+            label="Dating"
+            value={filterDating}
+            onChange={e => setFilterDating(e.target.value)}
+          >
+            <MenuItem value=""><em>All</em></MenuItem>
+            {datingOptions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <FormControl size="small" sx={{ width: '100%' }}>
+          <InputLabel>Actual Location</InputLabel>
+          <Select
+            label="Actual Location"
+            value={filterLocation}
+            onChange={e => setFilterLocation(e.target.value)}
+          >
+            <MenuItem value=""><em>All</em></MenuItem>
+            {locationOptions.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+          </Select>
+        </FormControl>
+      </Box>
+
+      {/* Inline Add/Edit Form (editors only) */}
+      {canEdit && showForm && (
         <Box sx={{ mb: 4, p: 2, border: '1px solid #eee', borderRadius: 2, background: '#fafafa' }}>
           <Typography variant="h6" gutterBottom>{editId ? "Edit Object" : "Add New Object"}</Typography>
           <Box component="form" sx={{ display: 'grid', gap: 2 }}>
@@ -303,17 +389,17 @@ function ObjectsPage({ user }) {
             <TextField label="References" value={form.references} onChange={e => setForm(f => ({ ...f, references: e.target.value }))} placeholder="e.g., Bibliography, museum records" multiline minRows={2} size="small" />
             <TextField label="Transliteration(s)" value={form.transliterations} onChange={e => setForm(f => ({ ...f, transliterations: e.target.value }))} placeholder="e.g., Hieroglyphic, Demotic, Coptic" multiline minRows={2} size="small" />
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
-                Save
+              <Button variant="contained" startIcon={editId ? <SaveIcon /> : <AddIcon />} onClick={handleAdd}>
+                {editId ? "Update" : "Save"}
               </Button>
-              <Button variant="outlined" onClick={() => { setShowForm(false); setEditId(null); }}>
+              <Button variant="outlined" startIcon={<CloseIcon />} onClick={() => { setShowForm(false); setEditId(null); }}>
                 Cancel
               </Button>
             </Box>
           </Box>
         </Box>
       )}
-      {!showForm && (
+      {canEdit && !showForm && (
         <Fab
           color="primary"
           aria-label="add"
@@ -356,14 +442,16 @@ function ObjectsPage({ user }) {
           {filtered.map((o) => (
             <ListItem key={o.id} divider
               secondaryAction={
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <IconButton aria-label="edit" size="small" onClick={() => handleEdit(o)}>
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton aria-label="delete" size="small" color="error" onClick={() => handleDelete(o.id)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Box>
+                canEdit ? (
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <IconButton aria-label="edit" size="small" onClick={() => handleEdit(o)}>
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton aria-label="delete" size="small" color="error" onClick={() => handleDelete(o.id)}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ) : null
               }
             >
               <ListItemText
