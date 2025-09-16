@@ -1,27 +1,24 @@
+
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Box, TextField, Button, List, ListItem, ListItemText, CircularProgress, Snackbar, Alert, Typography, Fab, IconButton, MenuItem, FormControl, InputLabel, Select, Tooltip } from "@mui/material";
+import { Container, Box, TextField, Button, CircularProgress, Snackbar, Alert, Typography, Fab, IconButton, MenuItem, FormControl, InputLabel, Select, Tooltip, List, ListItem, ListItemText } from "@mui/material";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import AddIcon from "@mui/icons-material/Add";
-import SaveIcon from "@mui/icons-material/Save";
-import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { db } from "../firebase";
-import {
-  addDoc,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp
-} from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, onSnapshot, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import { storage } from "../firebase";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import EditObjectForm from "./EditObjectForm";
 
 function ObjectsPage({ user }) {
   // Permission logic
   const role = user?.role || "";
   const canEdit = role === "edit" || role === "superadmin";
-  // ...existing code...
+  const addFormRef = React.useRef(null);
+
   const importCSV = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -83,6 +80,18 @@ function ObjectsPage({ user }) {
   };
   const [loading, setLoading] = useState(true);
   const [objects, setObjects] = useState([]);
+  // Load objects from Firestore
+  useEffect(() => {
+    const q = collection(db, "objects");
+    const unsub = onSnapshot(q, (snapshot) => {
+      setObjects(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
+    }, (err) => {
+      setSnack({ open: true, msg: "Failed to load objects", severity: "error" });
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
   const [qText, setQText] = useState("");
   // Filter states
   const [filterType, setFilterType] = useState("");
@@ -112,36 +121,12 @@ function ObjectsPage({ user }) {
     references: "",
     transliterations: ""
   });
-  const [snack, setSnack] = useState({
-    open: false,
-    msg: "",
-    severity: "success",
-  });
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
-
-  useEffect(() => {
-    const col = collection(db, "objects");
-    const q = query(col, orderBy("createdAt", "desc"));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        setObjects(list);
-        setLoading(false);
-      },
-      (err) => {
-        console.error(err);
-        setSnack({
-          open: true,
-          msg: "Failed to load objects",
-          severity: "error",
-        });
-        setLoading(false);
-      }
-    );
-    return () => unsub();
-  }, []);
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [snack, setSnack] = useState({ open: false, msg: '', severity: 'info' });
+  // ...existing code...
 
   const filtered = useMemo(() => {
     let result = objects;
@@ -173,9 +158,22 @@ function ObjectsPage({ user }) {
       setSnack({ open: true, msg: "Name is required", severity: "warning" });
       return;
     }
+    setUploading(true);
     try {
+      // Upload new images to Firebase Storage
+      const uploadedUrls = [];
+      for (const img of images) {
+        if (img.file) {
+          const storageRef = ref(storage, `object-images/${Date.now()}-${img.file.name}`);
+          await uploadBytes(storageRef, img.file);
+          const url = await getDownloadURL(storageRef);
+          uploadedUrls.push(url);
+        } else if (img.url && img.url.startsWith('http')) {
+          uploadedUrls.push(img.url);
+        }
+      }
       if (editId) {
-        const { doc, updateDoc } = await import("firebase/firestore");
+        // Update existing object
         await updateDoc(doc(db, "objects", editId), {
           no: form.no.trim(),
           name: form.name.trim(),
@@ -190,10 +188,12 @@ function ObjectsPage({ user }) {
           links: form.links.trim(),
           stateOfPreservation: form.stateOfPreservation.trim(),
           references: form.references.trim(),
-          transliterations: form.transliterations.trim()
+          transliterations: form.transliterations.trim(),
+          images: uploadedUrls
         });
         setSnack({ open: true, msg: "Object updated", severity: "success" });
       } else {
+        // Add new object
         await addDoc(collection(db, "objects"), {
           no: form.no.trim(),
           name: form.name.trim(),
@@ -209,6 +209,7 @@ function ObjectsPage({ user }) {
           stateOfPreservation: form.stateOfPreservation.trim(),
           references: form.references.trim(),
           transliterations: form.transliterations.trim(),
+          images: uploadedUrls,
           createdBy: user?.uid || null,
           createdAt: serverTimestamp(),
         });
@@ -230,12 +231,14 @@ function ObjectsPage({ user }) {
         references: "",
         transliterations: ""
       });
+      setImages([]);
       setShowForm(false);
       setEditId(null);
     } catch (e) {
       console.error(e);
       setSnack({ open: true, msg: "Failed to save object", severity: "error" });
     }
+    setUploading(false);
   };
 
   const handleEdit = (obj) => {
@@ -255,13 +258,33 @@ function ObjectsPage({ user }) {
       references: obj.references || "",
       transliterations: obj.transliterations || ""
     });
+    // Prefill images state with URLs for editing
+    setImages(Array.isArray(obj.images) ? obj.images.map(url => ({ url })) : []);
     setEditId(obj.id);
     setShowForm(true);
   };
 
   const handleDelete = async (id) => {
     try {
-      const { doc, deleteDoc } = await import("firebase/firestore");
+      // Find the object to get its images
+      const obj = objects.find(o => o.id === id);
+      // Delete all images from storage
+      if (obj && Array.isArray(obj.images)) {
+        for (const url of obj.images) {
+          try {
+            // Extract the storage path from the URL
+            const matches = url.match(/\/o\/([^?]+)/);
+            const path = matches ? decodeURIComponent(matches[1]) : null;
+            if (path) {
+              await deleteObject(ref(storage, path));
+            }
+          } catch (err) {
+            // Ignore errors for missing files
+            console.warn("Failed to delete image from storage", err);
+          }
+        }
+      }
+      // Delete the Firestore document
       await deleteDoc(doc(db, "objects", id));
       setSnack({ open: true, msg: "Object deleted", severity: "success" });
     } catch (e) {
@@ -368,37 +391,6 @@ function ObjectsPage({ user }) {
         </FormControl>
       </Box>
 
-      {/* Inline Add/Edit Form (editors only) */}
-      {canEdit && showForm && (
-        <Box sx={{ mb: 4, p: 2, border: '1px solid #eee', borderRadius: 2, background: '#fafafa' }}>
-          <Typography variant="h6" gutterBottom>{editId ? "Edit Object" : "Add New Object"}</Typography>
-          <Box component="form" sx={{ display: 'grid', gap: 2 }}>
-            {/* ...all form fields unchanged... */}
-            <TextField label="No." value={form.no} onChange={e => setForm(f => ({ ...f, no: e.target.value }))} placeholder="e.g., 1029" type="number" size="small" />
-            <TextField label="Name of Object" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Ram's head, Ichneumon, Pectoral" required size="small" />
-            <TextField label="Type of Object" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} placeholder="e.g., Statue, Pectoral" size="small" />
-            <TextField label="Museographic Index" value={form.museographicIndex} onChange={e => setForm(f => ({ ...f, museographicIndex: e.target.value }))} placeholder="e.g., 1029, 1062, 2021" size="small" />
-            <TextField label="Astronomical Type" value={form.astronomicalType} onChange={e => setForm(f => ({ ...f, astronomicalType: e.target.value }))} placeholder="e.g., Amun-Ra, Incarnation of Atum, Sun rising" size="small" />
-            <TextField label="Astronomical Use" value={form.astronomicalUse} onChange={e => setForm(f => ({ ...f, astronomicalUse: e.target.value }))} placeholder="e.g., Ritual, Symbolism" size="small" />
-            <TextField label="Dating" value={form.dating} onChange={e => setForm(f => ({ ...f, dating: e.target.value }))} placeholder="e.g., 20th dynasty, Late period, 19th dynasty?" size="small" />
-            <TextField label="Finding Localization" value={form.findingLocalization} onChange={e => setForm(f => ({ ...f, findingLocalization: e.target.value }))} placeholder="e.g., Unknown" size="small" />
-            <TextField label="Actual Location" value={form.actualLocation} onChange={e => setForm(f => ({ ...f, actualLocation: e.target.value }))} placeholder="e.g., Kunsthistorisches Museum Vienna" size="small" />
-            <TextField label="Content" value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} placeholder="e.g., Description, notes" multiline minRows={2} size="small" />
-            <TextField label="Links" value={form.links} onChange={e => setForm(f => ({ ...f, links: e.target.value }))} placeholder="e.g., https://globalegyptianmuseum.org/detail.aspx?id=4531" multiline minRows={2} size="small" />
-            <TextField label="State of Preservation" value={form.stateOfPreservation} onChange={e => setForm(f => ({ ...f, stateOfPreservation: e.target.value }))} placeholder="e.g., good, damaged" size="small" />
-            <TextField label="References" value={form.references} onChange={e => setForm(f => ({ ...f, references: e.target.value }))} placeholder="e.g., Bibliography, museum records" multiline minRows={2} size="small" />
-            <TextField label="Transliteration(s)" value={form.transliterations} onChange={e => setForm(f => ({ ...f, transliterations: e.target.value }))} placeholder="e.g., Hieroglyphic, Demotic, Coptic" multiline minRows={2} size="small" />
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button variant="contained" startIcon={editId ? <SaveIcon /> : <AddIcon />} onClick={handleAdd}>
-                {editId ? "Update" : "Save"}
-              </Button>
-              <Button variant="outlined" startIcon={<CloseIcon />} onClick={() => { setShowForm(false); setEditId(null); }}>
-                Cancel
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-      )}
       {canEdit && !showForm && (
         <Fab
           color="primary"
@@ -440,28 +432,70 @@ function ObjectsPage({ user }) {
       ) : (
         <List dense>
           {filtered.map((o) => (
-            <ListItem key={o.id} divider
-              secondaryAction={
-                canEdit ? (
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton aria-label="edit" size="small" onClick={() => handleEdit(o)}>
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton aria-label="delete" size="small" color="error" onClick={() => handleDelete(o.id)}>
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                ) : null
-              }
-            >
-              <ListItemText
-                primary={o.name || "(untitled)"}
-                secondary={
-                  [o.astronomicalType, o.astronomicalUse].filter(Boolean).join(" • ") || null
+            editId === o.id ? (
+              <Box key={o.id} sx={{ mb: 2 }}>
+                <EditObjectForm
+                  form={form}
+                  setForm={setForm}
+                  editId={editId}
+                  handleAdd={handleAdd}
+                  setShowForm={setShowForm}
+                  setEditId={setEditId}
+                  images={images}
+                  setImages={setImages}
+                  uploading={uploading}
+                />
+              </Box>
+            ) : (
+              <ListItem key={o.id} divider
+                secondaryAction={
+                  canEdit ? (
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <IconButton aria-label="edit" size="small" onClick={() => handleEdit(o)}>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton aria-label="delete" size="small" color="error" onClick={() => handleDelete(o.id)}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ) : null
                 }
-              />
-            </ListItem>
+              >
+                {/* Thumbnail or placeholder */}
+                <Box sx={{ width: 56, height: 56, mr: 2, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee', borderRadius: 1, overflow: 'hidden', background: '#fafafa' }}>
+                  {Array.isArray(o.images) && o.images.length > 0 ? (
+                    <img src={o.images[0]} alt="thumb" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', fontSize: 24 }}>
+                      <PhotoCamera fontSize="inherit" />
+                    </Box>
+                  )}
+                </Box>
+                <ListItemText
+                  primary={o.name || "(untitled)"}
+                  secondary={
+                    [o.astronomicalType, o.astronomicalUse].filter(Boolean).join(" • ") || null
+                  }
+                />
+              </ListItem>
+            )
           ))}
+          {/* Add form at the bottom */}
+          {canEdit && showForm && !editId && (
+            <Box ref={addFormRef} sx={{ mb: 2 }}>
+              <EditObjectForm
+                form={form}
+                setForm={setForm}
+                editId={editId}
+                handleAdd={handleAdd}
+                setShowForm={setShowForm}
+                setEditId={setEditId}
+                images={images}
+                setImages={setImages}
+                uploading={uploading}
+              />
+            </Box>
+          )}
         </List>
       )}
 
