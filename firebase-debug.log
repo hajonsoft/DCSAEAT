@@ -1,0 +1,562 @@
+[debug] [2025-09-17T09:11:06.763Z] ----------------------------------------------------------------------
+[debug] [2025-09-17T09:11:06.765Z] Command:       /Users/aymanali/.nvm/versions/node/v22.4.0/bin/node /Users/aymanali/.nvm/versions/node/v22.4.0/bin/firebase deploy --only functions
+[debug] [2025-09-17T09:11:06.765Z] CLI Version:   14.16.0
+[debug] [2025-09-17T09:11:06.765Z] Platform:      darwin
+[debug] [2025-09-17T09:11:06.765Z] Node Version:  v22.4.0
+[debug] [2025-09-17T09:11:06.765Z] Time:          Wed Sep 17 2025 12:11:06 GMT+0300 (Eastern European Summer Time)
+[debug] [2025-09-17T09:11:06.765Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-17T09:11:06.840Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-17T09:11:06.840Z] > authorizing via signed-in user (hajonsoft@gmail.com)
+[debug] [2025-09-17T09:11:06.840Z] [iam] checking project dcsaeat for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-09-17T09:11:06.840Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:06.841Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:06.841Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions [none]
+[debug] [2025-09-17T09:11:06.841Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions x-goog-quota-user=projects/dcsaeat
+[debug] [2025-09-17T09:11:06.841Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-09-17T09:11:07.691Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions 200
+[debug] [2025-09-17T09:11:07.691Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-09-17T09:11:07.691Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:07.691Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:07.691Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-09-17T09:11:07.691Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-09-17T09:11:07.976Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-09-17T09:11:07.976Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'dcsaeat'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2025-09-17T09:11:09.798Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:09.798Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:09.798Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat [none]
+[debug] [2025-09-17T09:11:10.039Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat 200
+[debug] [2025-09-17T09:11:10.039Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat {"projectNumber":"882030543934","projectId":"dcsaeat","lifecycleState":"ACTIVE","name":"DCSAEAT","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-09-13T22:08:35.062071Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-09-17T09:11:10.042Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:10.043Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:10.043Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/dcsaeat/adminSdkConfig [none]
+[debug] [2025-09-17T09:11:10.695Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/dcsaeat/adminSdkConfig 200
+[debug] [2025-09-17T09:11:10.695Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/dcsaeat/adminSdkConfig {"projectId":"dcsaeat","storageBucket":"dcsaeat.firebasestorage.app"}
+[debug] [2025-09-17T09:11:10.696Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:10.697Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:10.697Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/dcsaeat/configs [none]
+[debug] [2025-09-17T09:11:11.071Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/dcsaeat/configs 200
+[debug] [2025-09-17T09:11:11.071Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/dcsaeat/configs {}
+[debug] [2025-09-17T09:11:11.073Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2025-09-17T09:11:11.479Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint . --fix",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^4.4.1",
+    "openai": "^5.20.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-09-17T09:11:11.479Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[info] i  functions: You are using a version of firebase-functions SDK (4.9.0) that does not have support for the newest Firebase Extensions features. Please update firebase-functions SDK to >=5.1.0 to use them correctly 
+[debug] [2025-09-17T09:11:11.480Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-09-17T09:11:11.486Z] Found firebase-functions binary at '/Users/aymanali/projects/dcsaeat/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8525
+
+[debug] [2025-09-17T09:11:11.850Z] Got response from /__/functions.yaml {"endpoints":{"chat":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY"}],"httpsTrigger":{},"entryPoint":"chat"}},"specVersion":"v1alpha1","requiredAPIs":[]}
+[info] i  functions: preparing functions directory for uploading... 
+[info] i  functions: packaged /Users/aymanali/projects/dcsaeat/functions (77.88 KB) for uploading 
+[debug] [2025-09-17T09:11:16.898Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:16.898Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:16.898Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/-/functions [none]
+[debug] [2025-09-17T09:11:17.719Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/-/functions 200
+[debug] [2025-09-17T09:11:17.719Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/-/functions {}
+[debug] [2025-09-17T09:11:17.720Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:17.720Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:17.721Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/dcsaeat/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2025-09-17T09:11:18.827Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/dcsaeat/locations/-/functions 200
+[debug] [2025-09-17T09:11:18.827Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/dcsaeat/locations/-/functions {}
+[info] i  functions: ensuring required API secretmanager.googleapis.com is enabled... 
+[debug] [2025-09-17T09:11:18.829Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:18.829Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:18.830Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/882030543934/services/secretmanager.googleapis.com [none]
+[debug] [2025-09-17T09:11:18.830Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/882030543934/services/secretmanager.googleapis.com x-goog-quota-user=projects/882030543934
+[debug] [2025-09-17T09:11:19.358Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/882030543934/services/secretmanager.googleapis.com 200
+[debug] [2025-09-17T09:11:19.358Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/882030543934/services/secretmanager.googleapis.com [omitted]
+[info] ✔  functions: required API secretmanager.googleapis.com is enabled 
+[debug] [2025-09-17T09:11:19.370Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:19.370Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:19.370Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY/versions/latest [none]
+[debug] [2025-09-17T09:11:19.683Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY/versions/latest 200
+[debug] [2025-09-17T09:11:19.683Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY/versions/latest {"name":"projects/882030543934/secrets/OPENAI_API_KEY/versions/2","createTime":"2025-09-17T09:06:18.258074Z","state":"ENABLED","replicationStatus":{"automatic":{}},"etag":"\"163efb8caf069a\""}
+[debug] [2025-09-17T09:11:19.685Z] Resolved secret version of OPENAI_API_KEY to 2.
+[debug] [2025-09-17T09:11:19.687Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:19.687Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:19.687Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat [none]
+[debug] [2025-09-17T09:11:20.005Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat 200
+[debug] [2025-09-17T09:11:20.005Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat {"projectNumber":"882030543934","projectId":"dcsaeat","lifecycleState":"ACTIVE","name":"DCSAEAT","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-09-13T22:08:35.062071Z"}
+[info] i  functions: ensuring dcsaeat@appspot.gserviceaccount.com access to secret OPENAI_API_KEY. 
+[debug] [2025-09-17T09:11:20.006Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:20.006Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:20.006Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:getIamPolicy [none]
+[debug] [2025-09-17T09:11:20.372Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:getIamPolicy 200
+[debug] [2025-09-17T09:11:20.372Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:getIamPolicy {"etag":"ACAB"}
+[debug] [2025-09-17T09:11:20.373Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:20.373Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:20.373Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:setIamPolicy [none]
+[debug] [2025-09-17T09:11:20.373Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:setIamPolicy {"policy":{"bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:dcsaeat@appspot.gserviceaccount.com"]}]},"updateMask":"bindings"}
+[debug] [2025-09-17T09:11:20.964Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:setIamPolicy 200
+[debug] [2025-09-17T09:11:20.964Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:setIamPolicy {"version":1,"etag":"BwY++564/i4=","bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:dcsaeat@appspot.gserviceaccount.com"]}]}
+[info] ✔  secretmanager: Granted roles/secretmanager.secretAccessor on projects/dcsaeat/secrets/OPENAI_API_KEY to dcsaeat@appspot.gserviceaccount.com 
+[info] ✔  functions: ensured dcsaeat@appspot.gserviceaccount.com access to OPENAI_API_KEY. 
+[debug] [2025-09-17T09:11:20.966Z] [functions] found 1 new HTTP functions, testing setIamPolicy permission...
+[debug] [2025-09-17T09:11:20.966Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:20.966Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:20.966Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions [none]
+[debug] [2025-09-17T09:11:20.966Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions x-goog-quota-user=projects/dcsaeat
+[debug] [2025-09-17T09:11:20.966Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.setIamPolicy"]}
+[debug] [2025-09-17T09:11:21.146Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions 200
+[debug] [2025-09-17T09:11:21.146Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.setIamPolicy"]}
+[debug] [2025-09-17T09:11:21.146Z] [functions] found setIamPolicy permission, proceeding with deploy
+[debug] [2025-09-17T09:11:21.147Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:21.147Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:21.148Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl [none]
+[debug] [2025-09-17T09:11:21.148Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl {}
+[debug] [2025-09-17T09:11:30.812Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl 200
+[debug] [2025-09-17T09:11:30.812Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl {"uploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/c7fd634e-c7b7-4798-9007-f3f2343ecb3f.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102090&Signature=rXlCiVVANeBrUS8WAqAX8dzUaDGEEb2G5vhQ%2F%2FNma6bWJD2OhAl1cEZ%2F23n4mQlS9ciFtiLV3MrAwbmqjSabOqBw72PbHoUcP%2FnunMrAPwmTteIErsFEYOZzsdJEWHcMK2DgLGgMi398NMjreFfNAlNE9mH6aUjQ3fBKTQfhwplln5URFEmPnF3CysAv4Cloc3qAgCDURmHOS1RLaTUSfddT4OoK25AkE3y2upOZO41AwORCGCPF3WmsiGqxJZAV7TNI1qPN3nQSzN3Vct7l6iR3vQ20pxnr0xPP4Q65qbGKJ%2FXGxgjzozV9GqP60zJH7Ee4ZX4HX3hHv1HKYDgGVw%3D%3D"}
+[debug] [2025-09-17T09:11:30.814Z] >>> [apiv2][query] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/c7fd634e-c7b7-4798-9007-f3f2343ecb3f.zip GoogleAccessId=service-882030543934%40gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102090&Signature=rXlCiVVANeBrUS8WAqAX8dzUaDGEEb2G5vhQ%2F%2FNma6bWJD2OhAl1cEZ%2F23n4mQlS9ciFtiLV3MrAwbmqjSabOqBw72PbHoUcP%2FnunMrAPwmTteIErsFEYOZzsdJEWHcMK2DgLGgMi398NMjreFfNAlNE9mH6aUjQ3fBKTQfhwplln5URFEmPnF3CysAv4Cloc3qAgCDURmHOS1RLaTUSfddT4OoK25AkE3y2upOZO41AwORCGCPF3WmsiGqxJZAV7TNI1qPN3nQSzN3Vct7l6iR3vQ20pxnr0xPP4Q65qbGKJ%2FXGxgjzozV9GqP60zJH7Ee4ZX4HX3hHv1HKYDgGVw%3D%3D
+[debug] [2025-09-17T09:11:30.814Z] >>> [apiv2][body] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/c7fd634e-c7b7-4798-9007-f3f2343ecb3f.zip [stream]
+[debug] [2025-09-17T09:11:31.644Z] <<< [apiv2][status] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/c7fd634e-c7b7-4798-9007-f3f2343ecb3f.zip 200
+[debug] [2025-09-17T09:11:31.644Z] <<< [apiv2][body] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/c7fd634e-c7b7-4798-9007-f3f2343ecb3f.zip [omitted]
+[info] ✔  functions: functions source uploaded successfully 
+[info] i  functions: creating Node.js 22 (1st Gen) function chat(us-central1)... 
+[debug] [2025-09-17T09:11:31.648Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:31.648Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:31.648Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions [none]
+[debug] [2025-09-17T09:11:31.649Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions {"name":"projects/dcsaeat/locations/us-central1/functions/chat","sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/c7fd634e-c7b7-4798-9007-f3f2343ecb3f.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102090&Signature=rXlCiVVANeBrUS8WAqAX8dzUaDGEEb2G5vhQ%2F%2FNma6bWJD2OhAl1cEZ%2F23n4mQlS9ciFtiLV3MrAwbmqjSabOqBw72PbHoUcP%2FnunMrAPwmTteIErsFEYOZzsdJEWHcMK2DgLGgMi398NMjreFfNAlNE9mH6aUjQ3fBKTQfhwplln5URFEmPnF3CysAv4Cloc3qAgCDURmHOS1RLaTUSfddT4OoK25AkE3y2upOZO41AwORCGCPF3WmsiGqxJZAV7TNI1qPN3nQSzN3Vct7l6iR3vQ20pxnr0xPP4Q65qbGKJ%2FXGxgjzozV9GqP60zJH7Ee4ZX4HX3hHv1HKYDgGVw%3D%3D","entryPoint":"chat","runtime":"nodejs22","dockerRegistry":"ARTIFACT_REGISTRY","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"5b2d40580d9841200863415b238960f40a6ba971"},"httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"minInstances":null,"maxInstances":null,"ingressSettings":null,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","secret":"OPENAI_API_KEY","projectId":"dcsaeat","version":"2"}],"serviceAccountEmail":null,"availableMemoryMb":null,"timeout":null,"vpcConnector":null,"vpcConnectorEgressSettings":null,"buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""}}
+[debug] [2025-09-17T09:11:32.157Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions 400
+[debug] [2025-09-17T09:11:32.158Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions {"error":{"code":400,"message":"Failed to create 1st Gen function projects/dcsaeat/locations/us-central1/functions/chat: runtime: Runtime validation errors: [error_code: \t INVALID_RUNTIME\nmessage: \"Runtime \\\"nodejs22\\\" is not supported on GCF Gen1\"\n]","status":"INVALID_ARGUMENT"}}
+[warn] ⚠  functions: Runtime "nodejs22" is not supported on GCF Gen1 for function projects/dcsaeat/locations/us-central1/functions/chat 
+[warn] ⚠  functions: failed to create function projects/dcsaeat/locations/us-central1/functions/chat 
+[error] Failed to create function projects/dcsaeat/locations/us-central1/functions/chat
+[debug] [2025-09-17T09:11:32.170Z] Total Function Deployment time: 514
+[debug] [2025-09-17T09:11:32.170Z] 1 Functions Deployed
+[debug] [2025-09-17T09:11:32.170Z] 1 Functions Errored
+[debug] [2025-09-17T09:11:32.171Z] 0 Function Deployments Aborted
+[debug] [2025-09-17T09:11:32.171Z] Average Function Deployment time: 513
+[info] 
+[info] Functions deploy had errors with the following functions:
+	chat(us-central1)
+[debug] [2025-09-17T09:11:32.339Z] Not printing URL for HTTPS function. Typically this means it didn't match a filter or we failed deployment
+[debug] [2025-09-17T09:11:32.340Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:32.340Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:11:32.340Z] >>> [apiv2][query] GET https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts [none]
+[debug] [2025-09-17T09:11:33.277Z] <<< [apiv2][status] GET https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts 404
+[debug] [2025-09-17T09:11:33.278Z] <<< [apiv2][body] GET https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts {"error":{"code":404,"message":"Requested entity was not found.","status":"NOT_FOUND"}}
+[debug] [2025-09-17T09:11:33.279Z] Failed to check artifact cleanup policy for region us-central1: Request to https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts had HTTP Error: 404, Requested entity was not found. {"name":"FirebaseError","children":[],"context":{"body":{"error":{"code":404,"message":"Requested entity was not found.","status":"NOT_FOUND"}},"response":{"statusCode":404}},"exit":1,"message":"Request to https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts had HTTP Error: 404, Requested entity was not found.","status":404}
+[debug] [2025-09-17T09:11:33.281Z] Functions deploy failed.
+[debug] [2025-09-17T09:11:33.281Z] {
+  "endpoint": {
+    "id": "chat",
+    "project": "dcsaeat",
+    "region": "us-central1",
+    "entryPoint": "chat",
+    "platform": "gcfv1",
+    "runtime": "nodejs22",
+    "httpsTrigger": {},
+    "secretEnvironmentVariables": [
+      {
+        "key": "OPENAI_API_KEY",
+        "secret": "OPENAI_API_KEY",
+        "projectId": "dcsaeat",
+        "version": "2"
+      }
+    ],
+    "serviceAccount": null,
+    "ingressSettings": null,
+    "availableMemoryMb": null,
+    "timeoutSeconds": null,
+    "maxInstances": null,
+    "minInstances": null,
+    "vpc": null,
+    "environmentVariables": {
+      "FIREBASE_CONFIG": "{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}",
+      "GCLOUD_PROJECT": "dcsaeat",
+      "EVENTARC_CLOUD_EVENT_SOURCE": "projects/dcsaeat/locations/us-central1/functions/chat"
+    },
+    "codebase": "default",
+    "targetedByOnly": false,
+    "hash": "5b2d40580d9841200863415b238960f40a6ba971",
+    "labels": {
+      "deployment-tool": "cli-firebase"
+    }
+  },
+  "op": "create",
+  "original": {
+    "name": "FirebaseError",
+    "children": [],
+    "context": {
+      "function": "projects/dcsaeat/locations/us-central1/functions/chat"
+    },
+    "exit": 1,
+    "message": "Failed to create function projects/dcsaeat/locations/us-central1/functions/chat",
+    "original": {
+      "name": "FirebaseError",
+      "children": [],
+      "context": {
+        "body": {
+          "error": {
+            "code": 400,
+            "message": "Failed to create 1st Gen function projects/dcsaeat/locations/us-central1/functions/chat: runtime: Runtime validation errors: [error_code: \t INVALID_RUNTIME\nmessage: \"Runtime \\\"nodejs22\\\" is not supported on GCF Gen1\"\n]",
+            "status": "INVALID_ARGUMENT"
+          }
+        },
+        "response": {
+          "statusCode": 400
+        }
+      },
+      "exit": 1,
+      "message": "Request to https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions had HTTP Error: 400, Failed to create 1st Gen function projects/dcsaeat/locations/us-central1/functions/chat: runtime: Runtime validation errors: [error_code: \t INVALID_RUNTIME\nmessage: \"Runtime \\\"nodejs22\\\" is not supported on GCF Gen1\"\n]",
+      "status": 400
+    },
+    "status": 400,
+    "code": 400
+  }
+}
+[debug] [2025-09-17T09:11:33.337Z] Error: Failed to create function chat in region us-central1
+    at /Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:52:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Fabricator.createV1Function (/Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:194:32)
+    at async Fabricator.createEndpoint (/Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:134:13)
+    at async handle (/Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:89:17)
+[error] 
+[error] Error: There was an error deploying functions
+[debug] [2025-09-17T09:13:07.004Z] ----------------------------------------------------------------------
+[debug] [2025-09-17T09:13:07.005Z] Command:       /Users/aymanali/.nvm/versions/node/v22.4.0/bin/node /Users/aymanali/.nvm/versions/node/v22.4.0/bin/firebase deploy --only functions
+[debug] [2025-09-17T09:13:07.005Z] CLI Version:   14.16.0
+[debug] [2025-09-17T09:13:07.005Z] Platform:      darwin
+[debug] [2025-09-17T09:13:07.005Z] Node Version:  v22.4.0
+[debug] [2025-09-17T09:13:07.005Z] Time:          Wed Sep 17 2025 12:13:07 GMT+0300 (Eastern European Summer Time)
+[debug] [2025-09-17T09:13:07.006Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-17T09:13:07.080Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-17T09:13:07.080Z] > authorizing via signed-in user (hajonsoft@gmail.com)
+[debug] [2025-09-17T09:13:07.081Z] [iam] checking project dcsaeat for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-09-17T09:13:07.081Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:07.081Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:07.081Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions [none]
+[debug] [2025-09-17T09:13:07.081Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions x-goog-quota-user=projects/dcsaeat
+[debug] [2025-09-17T09:13:07.081Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-09-17T09:13:07.388Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions 200
+[debug] [2025-09-17T09:13:07.388Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-09-17T09:13:07.389Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:07.389Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:07.389Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-09-17T09:13:07.389Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-09-17T09:13:08.212Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-09-17T09:13:08.212Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/dcsaeat/serviceAccounts/dcsaeat@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'dcsaeat'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2025-09-17T09:13:09.912Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:09.912Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:09.912Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat [none]
+[debug] [2025-09-17T09:13:10.131Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat 200
+[debug] [2025-09-17T09:13:10.132Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat {"projectNumber":"882030543934","projectId":"dcsaeat","lifecycleState":"ACTIVE","name":"DCSAEAT","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-09-13T22:08:35.062071Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-09-17T09:13:10.135Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:10.135Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:10.135Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/dcsaeat/adminSdkConfig [none]
+[debug] [2025-09-17T09:13:10.726Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/dcsaeat/adminSdkConfig 200
+[debug] [2025-09-17T09:13:10.726Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/dcsaeat/adminSdkConfig {"projectId":"dcsaeat","storageBucket":"dcsaeat.firebasestorage.app"}
+[debug] [2025-09-17T09:13:10.727Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:10.727Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:10.727Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/dcsaeat/configs [none]
+[debug] [2025-09-17T09:13:11.056Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/dcsaeat/configs 200
+[debug] [2025-09-17T09:13:11.057Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/dcsaeat/configs {}
+[debug] [2025-09-17T09:13:11.057Z] Validating nodejs source
+[warn] ⚠  functions: Runtime Node.js 18 was deprecated on 2025-04-30 and will be decommissioned on 2025-10-30, after which you will not be able to deploy without upgrading. Consider upgrading now to avoid disruption. See https://cloud.google.com/functions/docs/runtime-support for full details on the lifecycle policy 
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2025-09-17T09:13:11.343Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint . --fix",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1",
+    "openai": "^5.20.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-09-17T09:13:11.343Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[info] i  functions: You are using a version of firebase-functions SDK (4.9.0) that does not have support for the newest Firebase Extensions features. Please update firebase-functions SDK to >=5.1.0 to use them correctly 
+[debug] [2025-09-17T09:13:11.343Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-09-17T09:13:11.349Z] Found firebase-functions binary at '/Users/aymanali/projects/dcsaeat/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8036
+
+[debug] [2025-09-17T09:13:11.598Z] Got response from /__/functions.yaml {"endpoints":{"chat":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY"}],"httpsTrigger":{},"entryPoint":"chat"}},"specVersion":"v1alpha1","requiredAPIs":[]}
+[info] i  functions: preparing functions directory for uploading... 
+[info] i  functions: packaged /Users/aymanali/projects/dcsaeat/functions (77.88 KB) for uploading 
+[debug] [2025-09-17T09:13:16.646Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:16.646Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:16.646Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/-/functions [none]
+[debug] [2025-09-17T09:13:17.416Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/-/functions 200
+[debug] [2025-09-17T09:13:17.416Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/-/functions {}
+[debug] [2025-09-17T09:13:17.417Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:17.417Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:17.418Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/dcsaeat/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2025-09-17T09:13:18.060Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/dcsaeat/locations/-/functions 200
+[debug] [2025-09-17T09:13:18.060Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/dcsaeat/locations/-/functions {}
+[info] i  functions: ensuring required API secretmanager.googleapis.com is enabled... 
+[debug] [2025-09-17T09:13:18.065Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:18.065Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:18.065Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY/versions/latest [none]
+[debug] [2025-09-17T09:13:18.435Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY/versions/latest 200
+[debug] [2025-09-17T09:13:18.435Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY/versions/latest {"name":"projects/882030543934/secrets/OPENAI_API_KEY/versions/2","createTime":"2025-09-17T09:06:18.258074Z","state":"ENABLED","replicationStatus":{"automatic":{}},"etag":"\"163efb8caf069a\""}
+[debug] [2025-09-17T09:13:18.436Z] Resolved secret version of OPENAI_API_KEY to 2.
+[debug] [2025-09-17T09:13:18.437Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:18.437Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:18.437Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat [none]
+[debug] [2025-09-17T09:13:19.250Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat 200
+[debug] [2025-09-17T09:13:19.250Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat {"projectNumber":"882030543934","projectId":"dcsaeat","lifecycleState":"ACTIVE","name":"DCSAEAT","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-09-13T22:08:35.062071Z"}
+[info] i  functions: ensuring dcsaeat@appspot.gserviceaccount.com access to secret OPENAI_API_KEY. 
+[debug] [2025-09-17T09:13:19.252Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:19.252Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:19.252Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:getIamPolicy [none]
+[debug] [2025-09-17T09:13:19.689Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:getIamPolicy 200
+[debug] [2025-09-17T09:13:19.689Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/dcsaeat/secrets/OPENAI_API_KEY:getIamPolicy {"version":1,"etag":"BwY++564/i4=","bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:dcsaeat@appspot.gserviceaccount.com"]}]}
+[info] ✔  secretmanager: Granted roles/secretmanager.secretAccessor on projects/dcsaeat/secrets/OPENAI_API_KEY to dcsaeat@appspot.gserviceaccount.com 
+[info] ✔  functions: ensured dcsaeat@appspot.gserviceaccount.com access to OPENAI_API_KEY. 
+[debug] [2025-09-17T09:13:19.691Z] [functions] found 1 new HTTP functions, testing setIamPolicy permission...
+[debug] [2025-09-17T09:13:19.691Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:19.691Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:19.691Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions [none]
+[debug] [2025-09-17T09:13:19.691Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions x-goog-quota-user=projects/dcsaeat
+[debug] [2025-09-17T09:13:19.691Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.setIamPolicy"]}
+[debug] [2025-09-17T09:13:19.875Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions 200
+[debug] [2025-09-17T09:13:19.875Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/dcsaeat:testIamPermissions {"permissions":["cloudfunctions.functions.setIamPolicy"]}
+[debug] [2025-09-17T09:13:19.876Z] [functions] found setIamPolicy permission, proceeding with deploy
+[debug] [2025-09-17T09:13:19.876Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:19.877Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:19.877Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl [none]
+[debug] [2025-09-17T09:13:19.877Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl {}
+[debug] [2025-09-17T09:13:20.527Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl 200
+[debug] [2025-09-17T09:13:20.527Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions:generateUploadUrl {"uploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D"}
+[debug] [2025-09-17T09:13:20.529Z] >>> [apiv2][query] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip GoogleAccessId=service-882030543934%40gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D
+[debug] [2025-09-17T09:13:20.529Z] >>> [apiv2][body] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip [stream]
+[debug] [2025-09-17T09:13:21.210Z] <<< [apiv2][status] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip 200
+[debug] [2025-09-17T09:13:21.210Z] <<< [apiv2][body] PUT https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip [omitted]
+[info] ✔  functions: functions source uploaded successfully 
+[info] i  functions: creating Node.js 18 (1st Gen) function chat(us-central1)... 
+[debug] [2025-09-17T09:13:21.213Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:21.213Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:21.213Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions [none]
+[debug] [2025-09-17T09:13:21.213Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions {"name":"projects/dcsaeat/locations/us-central1/functions/chat","sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","entryPoint":"chat","runtime":"nodejs18","dockerRegistry":"ARTIFACT_REGISTRY","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"minInstances":null,"maxInstances":null,"ingressSettings":null,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","secret":"OPENAI_API_KEY","projectId":"dcsaeat","version":"2"}],"serviceAccountEmail":null,"availableMemoryMb":null,"timeout":null,"vpcConnector":null,"vpcConnectorEgressSettings":null,"buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""}}
+[debug] [2025-09-17T09:13:23.191Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions 200
+[debug] [2025-09-17T09:13:23.191Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/dcsaeat/locations/us-central1/functions {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","updateTime":"2025-09-17T09:13:23.125020566Z"}}
+[debug] [2025-09-17T09:13:23.192Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:23.192Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:23.193Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:13:23.436Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:13:23.436Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","updateTime":"2025-09-17T09:13:23.125020566Z"}}
+[debug] [2025-09-17T09:13:23.938Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:13:23.939Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:23.939Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:23.939Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:13:24.181Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:13:24.181Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:13:23.125020566Z"}}
+[debug] [2025-09-17T09:13:25.182Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:13:25.182Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:25.182Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:25.182Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:13:25.398Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:13:25.398Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:13:23.125020566Z"}}
+[debug] [2025-09-17T09:13:27.400Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:13:27.401Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:27.401Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:27.401Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:13:27.614Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:13:27.614Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:13:23.125020566Z"}}
+[debug] [2025-09-17T09:13:31.616Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:13:31.617Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:31.617Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:31.617Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:13:31.832Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:13:31.832Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:13:23.125020566Z"}}
+[debug] [2025-09-17T09:13:39.834Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:13:39.835Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:39.835Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:39.835Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:13:40.179Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:13:40.180Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:13:23.125020566Z","buildId":"97ab0b98-9476-40f5-bacc-f049bfc46700","buildName":"projects/882030543934/locations/us-central1/builds/97ab0b98-9476-40f5-bacc-f049bfc46700"}}
+[debug] [2025-09-17T09:13:50.181Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:13:50.183Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:50.183Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:13:50.184Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:13:50.521Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:13:50.521Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:13:23.125020566Z","buildId":"97ab0b98-9476-40f5-bacc-f049bfc46700","buildName":"projects/882030543934/locations/us-central1/builds/97ab0b98-9476-40f5-bacc-f049bfc46700"}}
+[debug] [2025-09-17T09:14:00.523Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:14:00.523Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:00.523Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:00.523Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:14:00.918Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:14:00.919Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:13:23.125020566Z","buildId":"97ab0b98-9476-40f5-bacc-f049bfc46700","buildName":"projects/882030543934/locations/us-central1/builds/97ab0b98-9476-40f5-bacc-f049bfc46700"}}
+[debug] [2025-09-17T09:14:10.921Z] [create-default-us-central1-chat] Retrying task index 0
+[debug] [2025-09-17T09:14:10.921Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:10.922Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:10.922Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 [none]
+[debug] [2025-09-17T09:14:11.284Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 200
+[debug] [2025-09-17T09:14:11.284Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0 {"name":"operations/cHJvamVjdHMvZGNzYWVhdC9sb2NhdGlvbnMvdXMtY2VudHJhbDEvb3BlcmF0aW9ucy9vcGVyYXRpb24tMTc1ODEwMDQwMTQzMi02M2VmYmE1ZTgyOTNmLWJhZjAzMDEwLWIyNTRlZWY0","metadata":{"@type":"type.googleapis.com/google.cloud.functions.v1.OperationMetadataV1","target":"projects/dcsaeat/locations/us-central1/functions/chat","type":"CREATE_FUNCTION","request":{"@type":"type.googleapis.com/google.cloud.functions.v1.CloudFunction","name":"projects/dcsaeat/locations/us-central1/functions/chat","httpsTrigger":{"securityLevel":"SECURE_ALWAYS"},"entryPoint":"chat","updateTime":"1970-01-01T00:00:00Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7f947ce3629d53b0c78498231a56a9b6ca6a293d"},"sourceUploadUrl":"https://storage.googleapis.com/uploads-147156571141.us-central1.cloudfunctions.appspot.com/4044602c-1de6-4635-a1c9-fb6ae6debc70.zip?GoogleAccessId=service-882030543934@gcf-admin-robot.iam.gserviceaccount.com&Expires=1758102200&Signature=BBDERSbNWusheConkBFrRS5X673Xq%2BMUQGk%2BXz1sj2rMF4KgpS2r15EvQZvgxACxzYEpwzdZUlD6hWN%2BNsO1XgaWyoXN2TkWtCCrmkOvnPy%2BPNmUFgcOkk84gY9dIvmJhprsYqsQHctquuAKHuQIkLxhUqfm9twQ4YkxIXkd5nOaySgw4bH0SAnOxO8w43iLul1Sdjem1wUqfJBfXljwIqpCZZnYGcg5pwRqr7W2JiSh2VhADVXmqR3B0gSVLJZb79w7pdOy%2BxG3PTBQugsOKXitNsPJ0Bb24hsuFulmMz2sH2LBjgUCX19O1NTOL5zqapHiOeiQ6sPOiEd2unbKKA%3D%3D","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}","GCLOUD_PROJECT":"dcsaeat","EVENTARC_CLOUD_EVENT_SOURCE":"projects/dcsaeat/locations/us-central1/functions/chat"},"runtime":"nodejs18","buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"secretEnvironmentVariables":[{"key":"OPENAI_API_KEY","projectId":"dcsaeat","secret":"OPENAI_API_KEY","version":"2"}],"dockerRegistry":"ARTIFACT_REGISTRY"},"versionId":"1","updateTime":"2025-09-17T09:14:08.231547162Z","buildId":"97ab0b98-9476-40f5-bacc-f049bfc46700","buildName":"projects/882030543934/locations/us-central1/builds/97ab0b98-9476-40f5-bacc-f049bfc46700"},"done":true,"error":{"code":3,"message":"Gen1 operation for function projects/dcsaeat/locations/us-central1/functions/chat failed: Build failed: npm error code EUSAGE\nnpm error\nnpm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.\nnpm error\nnpm error Invalid: lock file's firebase-functions@4.9.0 does not satisfy firebase-functions@6.4.0\nnpm error\nnpm error Clean install a project\nnpm error\nnpm error Usage:\nnpm error npm ci\nnpm error\nnpm error Options:\nnpm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]\nnpm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]\nnpm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]\nnpm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]\nnpm error [--no-bin-links] [--no-fund] [--dry-run]\nnpm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]\nnpm error [-ws|--workspaces] [--include-workspace-root] [--install-links]\nnpm error\nnpm error aliases: clean-install, ic, install-clean, isntall-clean\nnpm error\nnpm error Run \"npm help ci\" for more info\nnpm error A complete log of this run can be found in: /www-data-home/.npm/_logs/2025-09-17T09_13_58_463Z-debug-0.log; Error ID: 7fa33aaa."}}
+[debug] [2025-09-17T09:14:11.284Z] Got source token undefined for region us-central1
+[error] Gen1 operation for function projects/dcsaeat/locations/us-central1/functions/chat failed: Build failed: npm error code EUSAGE
+npm error
+npm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+npm error
+npm error Invalid: lock file's firebase-functions@4.9.0 does not satisfy firebase-functions@6.4.0
+npm error
+npm error Clean install a project
+npm error
+npm error Usage:
+npm error npm ci
+npm error
+npm error Options:
+npm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+npm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+npm error [--no-bin-links] [--no-fund] [--dry-run]
+npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+npm error
+npm error aliases: clean-install, ic, install-clean, isntall-clean
+npm error
+npm error Run "npm help ci" for more info
+npm error A complete log of this run can be found in: /www-data-home/.npm/_logs/2025-09-17T09_13_58_463Z-debug-0.log; Error ID: 7fa33aaa.
+[debug] [2025-09-17T09:14:11.294Z] Total Function Deployment time: 50074
+[debug] [2025-09-17T09:14:11.294Z] 1 Functions Deployed
+[debug] [2025-09-17T09:14:11.294Z] 1 Functions Errored
+[debug] [2025-09-17T09:14:11.294Z] 0 Function Deployments Aborted
+[debug] [2025-09-17T09:14:11.294Z] Average Function Deployment time: 50073
+[info] 
+[info] Functions deploy had errors with the following functions:
+	chat(us-central1)
+[debug] [2025-09-17T09:14:11.450Z] Not printing URL for HTTPS function. Typically this means it didn't match a filter or we failed deployment
+[debug] [2025-09-17T09:14:11.450Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:11.450Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:11.450Z] >>> [apiv2][query] GET https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts [none]
+[debug] [2025-09-17T09:14:12.299Z] <<< [apiv2][status] GET https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts 200
+[debug] [2025-09-17T09:14:12.299Z] <<< [apiv2][body] GET https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts {"name":"projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2025-09-17T09:13:34.583785Z","updateTime":"2025-09-17T09:13:34.583785Z","mode":"STANDARD_REPOSITORY","vulnerabilityScanningConfig":{"lastEnableTime":"2025-09-17T09:13:24.926216277Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true,"registryUri":"us-central1-docker.pkg.dev/dcsaeat/gcf-artifacts"}
+[warn] ⚠  functions: No cleanup policy detected for repositories in us-central1. This may result in a small monthly bill as container images accumulate over time. 
+[info] i  functions: Configuring cleanup policy for repository in us-central1. Images older than 1 days will be automatically deleted. 
+[debug] [2025-09-17T09:14:47.803Z] Setting up artifact cleanup policy for region us-central1
+[debug] [2025-09-17T09:14:47.803Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:47.803Z] Checked if tokens are valid: true, expires at: 1758102584562
+[debug] [2025-09-17T09:14:47.804Z] >>> [apiv2][query] PATCH https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts updateMask=name%2CcleanupPolicies%2CcleanupPolicyDryRun%2Clabels
+[debug] [2025-09-17T09:14:47.804Z] >>> [apiv2][body] PATCH https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts {"name":"projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","condition":{"tagState":"ANY","olderThan":"86400s"},"action":"DELETE"}},"cleanupPolicyDryRun":false,"labels":{"goog-managed-by":"cloudfunctions"}}
+[debug] [2025-09-17T09:14:48.771Z] <<< [apiv2][status] PATCH https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts 200
+[debug] [2025-09-17T09:14:48.771Z] <<< [apiv2][body] PATCH https://artifactregistry.googleapis.com/v1/projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts {"name":"projects/dcsaeat/locations/us-central1/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2025-09-17T09:13:34.583785Z","updateTime":"2025-09-17T09:14:48.607305Z","mode":"STANDARD_REPOSITORY","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","action":"DELETE","condition":{"tagState":"ANY","olderThan":"86400s"}}},"vulnerabilityScanningConfig":{"lastEnableTime":"2025-09-17T09:13:24.926216277Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true}
+[info] i  functions: Configured cleanup policy for repository in us-central1. 
+[debug] [2025-09-17T09:14:48.772Z] Functions deploy failed.
+[debug] [2025-09-17T09:14:48.772Z] {
+  "endpoint": {
+    "id": "chat",
+    "project": "dcsaeat",
+    "region": "us-central1",
+    "entryPoint": "chat",
+    "platform": "gcfv1",
+    "runtime": "nodejs18",
+    "httpsTrigger": {},
+    "secretEnvironmentVariables": [
+      {
+        "key": "OPENAI_API_KEY",
+        "secret": "OPENAI_API_KEY",
+        "projectId": "dcsaeat",
+        "version": "2"
+      }
+    ],
+    "serviceAccount": null,
+    "ingressSettings": null,
+    "availableMemoryMb": null,
+    "timeoutSeconds": null,
+    "maxInstances": null,
+    "minInstances": null,
+    "vpc": null,
+    "environmentVariables": {
+      "FIREBASE_CONFIG": "{\"projectId\":\"dcsaeat\",\"storageBucket\":\"dcsaeat.firebasestorage.app\"}",
+      "GCLOUD_PROJECT": "dcsaeat",
+      "EVENTARC_CLOUD_EVENT_SOURCE": "projects/dcsaeat/locations/us-central1/functions/chat"
+    },
+    "codebase": "default",
+    "targetedByOnly": false,
+    "hash": "7f947ce3629d53b0c78498231a56a9b6ca6a293d",
+    "labels": {
+      "deployment-tool": "cli-firebase"
+    }
+  },
+  "op": "create",
+  "original": {
+    "name": "FirebaseError",
+    "children": [],
+    "exit": 1,
+    "message": "Gen1 operation for function projects/dcsaeat/locations/us-central1/functions/chat failed: Build failed: npm error code EUSAGE\nnpm error\nnpm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.\nnpm error\nnpm error Invalid: lock file's firebase-functions@4.9.0 does not satisfy firebase-functions@6.4.0\nnpm error\nnpm error Clean install a project\nnpm error\nnpm error Usage:\nnpm error npm ci\nnpm error\nnpm error Options:\nnpm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]\nnpm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]\nnpm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]\nnpm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]\nnpm error [--no-bin-links] [--no-fund] [--dry-run]\nnpm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]\nnpm error [-ws|--workspaces] [--include-workspace-root] [--install-links]\nnpm error\nnpm error aliases: clean-install, ic, install-clean, isntall-clean\nnpm error\nnpm error Run \"npm help ci\" for more info\nnpm error A complete log of this run can be found in: /www-data-home/.npm/_logs/2025-09-17T09_13_58_463Z-debug-0.log; Error ID: 7fa33aaa.",
+    "original": {
+      "code": 3,
+      "message": "Gen1 operation for function projects/dcsaeat/locations/us-central1/functions/chat failed: Build failed: npm error code EUSAGE\nnpm error\nnpm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.\nnpm error\nnpm error Invalid: lock file's firebase-functions@4.9.0 does not satisfy firebase-functions@6.4.0\nnpm error\nnpm error Clean install a project\nnpm error\nnpm error Usage:\nnpm error npm ci\nnpm error\nnpm error Options:\nnpm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]\nnpm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]\nnpm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]\nnpm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]\nnpm error [--no-bin-links] [--no-fund] [--dry-run]\nnpm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]\nnpm error [-ws|--workspaces] [--include-workspace-root] [--install-links]\nnpm error\nnpm error aliases: clean-install, ic, install-clean, isntall-clean\nnpm error\nnpm error Run \"npm help ci\" for more info\nnpm error A complete log of this run can be found in: /www-data-home/.npm/_logs/2025-09-17T09_13_58_463Z-debug-0.log; Error ID: 7fa33aaa."
+    },
+    "status": 3,
+    "code": 3
+  }
+}
+[debug] [2025-09-17T09:14:48.924Z] Error: Failed to create function chat in region us-central1
+    at /Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:52:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Fabricator.createV1Function (/Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:194:32)
+    at async Fabricator.createEndpoint (/Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:134:13)
+    at async handle (/Users/aymanali/.nvm/versions/node/v22.4.0/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:89:17)
+[error] 
+[error] Error: There was an error deploying functions

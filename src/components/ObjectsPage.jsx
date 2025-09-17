@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { Container, Box, TextField, Button, CircularProgress, Snackbar, Alert, Typography, Fab, IconButton, MenuItem, FormControl, InputLabel, Select, Tooltip, List, ListItem, ListItemText } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
@@ -14,6 +15,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import EditObjectForm from "./EditObjectForm";
 
 function ObjectsPage({ user }) {
+  const [viewObj, setViewObj] = useState(null);
   // Permission logic
   const role = user?.role || "";
   const canEdit = role === "edit" || role === "superadmin";
@@ -446,19 +448,70 @@ function ObjectsPage({ user }) {
                   uploading={uploading}
                 />
               </Box>
+            ) : viewObj && viewObj.id === o.id ? (
+              <Box key={o.id} sx={{ mb: 2, p: 2, border: '1px solid #eee', borderRadius: 2, background: '#fafafa' }}>
+                <Typography variant="h6" gutterBottom>View Object</Typography>
+                {Array.isArray(viewObj.images) && viewObj.images.length > 0 && (
+                  <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    {viewObj.images.map((img, idx) => (
+                      <img key={idx} src={img} alt="object" style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 8, border: '1px solid #eee' }} />
+                    ))}
+                  </Box>
+                )}
+                <Typography variant="subtitle2">No:</Typography>
+                <Typography>{viewObj.no}</Typography>
+                <Typography variant="subtitle2">Name:</Typography>
+                <Typography>{viewObj.name}</Typography>
+                <Typography variant="subtitle2">Type:</Typography>
+                <Typography>{viewObj.type}</Typography>
+                <Typography variant="subtitle2">Museographic Index:</Typography>
+                <Typography>{viewObj.museographicIndex}</Typography>
+                <Typography variant="subtitle2">Astronomical Type:</Typography>
+                <Typography>{viewObj.astronomicalType}</Typography>
+                <Typography variant="subtitle2">Astronomical Use:</Typography>
+                <Typography>{viewObj.astronomicalUse}</Typography>
+                <Typography variant="subtitle2">Dating:</Typography>
+                <Typography>{viewObj.dating}</Typography>
+                <Typography variant="subtitle2">Finding Localization:</Typography>
+                <Typography>{viewObj.findingLocalization}</Typography>
+                <Typography variant="subtitle2">Actual Location:</Typography>
+                <Typography>{viewObj.actualLocation}</Typography>
+                <Typography variant="subtitle2">Content:</Typography>
+                <Typography>{viewObj.content}</Typography>
+                <Typography variant="subtitle2">Links:</Typography>
+                <Typography sx={{ wordBreak: 'break-all' }}>{viewObj.links}</Typography>
+                <Typography variant="subtitle2">State of Preservation:</Typography>
+                <Typography>{viewObj.stateOfPreservation}</Typography>
+                <Typography variant="subtitle2">References:</Typography>
+                <Typography>{viewObj.references}</Typography>
+                <Typography variant="subtitle2">Transliterations:</Typography>
+                <Typography>{viewObj.transliterations}</Typography>
+                <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                  <Button variant="contained" onClick={() => setViewObj(null)}>Close</Button>
+                </Box>
+              </Box>
             ) : (
               <ListItem key={o.id} divider
                 secondaryAction={
-                  canEdit ? (
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <IconButton aria-label="edit" size="small" onClick={() => handleEdit(o)}>
-                        <EditIcon fontSize="small" />
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Tooltip title="View">
+                      <IconButton aria-label="view" size="small" onClick={() => setViewObj(o)}>
+                        <VisibilityIcon fontSize="small" />
                       </IconButton>
-                      <IconButton aria-label="delete" size="small" color="error" onClick={() => handleDelete(o.id)}>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  ) : null
+                    </Tooltip>
+                    {canEdit && <>
+                      <Tooltip title="Edit">
+                        <IconButton aria-label="edit" size="small" onClick={() => handleEdit(o)}>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton aria-label="delete" size="small" color="error" onClick={() => handleDelete(o.id)}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </>}
+                  </Box>
                 }
               >
                 {/* Thumbnail or placeholder */}
