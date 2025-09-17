@@ -30,10 +30,26 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
     { label: "Transliterations", value: form.transliterations },
   ];
 
-  const aiInput = importantFields
-    .filter(f => f.value && String(f.value).trim())
-    .map(f => `${f.label}: ${f.value}`)
-    .join("\n");
+  // Helper to convert File/Blob to base64
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]); // remove data:*/*;base64,
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Helper to fetch remote image and convert to base64
+  const urlToBase64 = async (url) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      return await fileToBase64(blob);
+    } catch {
+      return null;
+    }
+  };
 
   const handleAnalyze = async () => {
     setAiOpen(true);
@@ -41,13 +57,54 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
     setAiError("");
     setAiResult("");
     try {
+      // Prepare up to 3 images as base64 (including Firebase Storage URLs)
+      const base64Images = await Promise.all(
+        images.slice(0, 3).map(async (img) => {
+          if (img.file) {
+            return await fileToBase64(img.file);
+          } else if (img.url && img.url.startsWith("data:")) {
+            // Already base64
+            return img.url.split(",")[1];
+          } else if (img.url) {
+            // Fetch remote image and convert
+            return await urlToBase64(img.url);
+          } else if (typeof img === 'string') {
+            // If just a string URL
+            return await urlToBase64(img);
+          } else {
+            return null;
+          }
+        })
+      );
+      const filteredImages = base64Images.filter(Boolean);
+
+      const imageUrls = images
+        .map(img => (typeof img === 'string' ? img : img.url))
+        .filter(Boolean);
+
+      let instruction = "You are an expert Egyptologist. Analyze the following object entry and provide insights, suggestions, or highlight any inconsistencies or missing information. Be concise and factual.";
+      if (filteredImages.length > 0) {
+        instruction +=
+          " For each image provided, attempt to read any hieroglyphs, describe the image in detail, and provide any insights or analysis you can about the depicted object(s).";
+      }
+
+      // Only include image URLs in aiInput if there are no images being sent
+      const aiInput = importantFields
+        .filter(f => f.value && String(f.value).trim())
+        .map(f => `${f.label}: ${f.value}`)
+        .join("\n") +
+        (imageUrls.length > 0 && filteredImages.length === 0
+          ? "\nImage URLs:\n" + imageUrls.map((url, i) => `Image ${i + 1}: ${url}`).join("\n")
+          : "");
+
       const res = await fetch("https://us-central1-dcsaeat.cloudfunctions.net/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          instruction: "You are an expert Egyptologist. Analyze the following object entry and provide insights, suggestions, or highlight any inconsistencies or missing information. Be concise and factual.",
+          instruction,
           input: aiInput,
-          model: "gpt-4o"
+          model: "gpt-4o",
+          images: filteredImages.length > 0 ? filteredImages : undefined
         })
       });
       if (!res.ok) throw new Error(await res.text() || `HTTP ${res.status}`);
