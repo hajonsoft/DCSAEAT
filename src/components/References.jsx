@@ -4,6 +4,7 @@ import { Typography } from "@mui/material";
 
 function References() {
   return (
+    <div style={{ backgroundColor: "rgb(204, 255, 255)", minHeight: "100vh" }}>
     <Container sx={{ py: 4 }}>
       <Typography variant="h5" gutterBottom>References</Typography>
       <Typography variant="body2" color="text.secondary">
@@ -11,6 +12,7 @@ function References() {
         the ability to add bibliographic entries and connect them via cross-refs.
       </Typography>
     </Container>
+    </div>
   );
 }
 

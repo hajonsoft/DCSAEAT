@@ -20,7 +20,7 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
     { label: "Type", value: form.type },
     { label: "Museographic Index", value: form.museographicIndex },
     { label: "Astronomical Type", value: form.astronomicalType },
-    { label: "Astronomical Use", value: form.astronomicalUse },
+    { label: "Use (Astronomical, Cosmographic, Ritual, etc…)", value: form.astronomicalUse },
     { label: "Dating", value: form.dating },
     { label: "Finding Localization", value: form.findingLocalization },
     { label: "Actual Location", value: form.actualLocation },
@@ -118,7 +118,8 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
   };
 
   return (
-    <Box sx={{ mb: 4, p: 2, border: '1px solid #eee', borderRadius: 2, background: '#fafafa' }}>
+    <div style={{ backgroundColor: 'rgb(204, 255, 255)' }}>
+    <Box sx={{ mb: 4, p: 2, border: '1px solid #eee', borderRadius: 2, background: 'rgb(204, 255, 255)' }}>
       <Typography variant="h6" gutterBottom>
         {readOnly ? "View Object" : (editId ? "Edit Object" : "Add New Object")}
       </Typography>
@@ -134,7 +135,7 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
         <TextField label="Type of Object" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} placeholder="e.g., Statue, Pectoral" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
         <TextField label="Museographic Index" value={form.museographicIndex} onChange={e => setForm(f => ({ ...f, museographicIndex: e.target.value }))} placeholder="e.g., 1029, 1062, 2021" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
         <TextField label="Astronomical Type" value={form.astronomicalType} onChange={e => setForm(f => ({ ...f, astronomicalType: e.target.value }))} placeholder="e.g., Amun-Ra, Incarnation of Atum, Sun rising" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Astronomical Use" value={form.astronomicalUse} onChange={e => setForm(f => ({ ...f, astronomicalUse: e.target.value }))} placeholder="e.g., Ritual, Symbolism" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
+        <TextField label="Use (Astronomical, Cosmographic, Ritual, etc…)" value={form.astronomicalUse} onChange={e => setForm(f => ({ ...f, astronomicalUse: e.target.value }))} placeholder="e.g., Ritual, Symbolism" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
         <TextField label="Dating" value={form.dating} onChange={e => setForm(f => ({ ...f, dating: e.target.value }))} placeholder="e.g., 20th dynasty, Late period, 19th dynasty?" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
         <TextField label="Finding Localization" value={form.findingLocalization} onChange={e => setForm(f => ({ ...f, findingLocalization: e.target.value }))} placeholder="e.g., Unknown" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
         <TextField label="Actual Location" value={form.actualLocation} onChange={e => setForm(f => ({ ...f, actualLocation: e.target.value }))} placeholder="e.g., Kunsthistorisches Museum Vienna" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
@@ -223,6 +224,7 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
         )}
       </Box>
     </Box>
+    </div>
   );
 }
 

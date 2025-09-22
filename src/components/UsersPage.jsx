@@ -24,6 +24,7 @@ function UsersPage({ currentUser }) {
   }
 
   return (
+    <div style={{ backgroundColor: "rgb(204, 255, 255)", minHeight: "100vh" }}>
     <Box sx={{ p: 4 }}>
       <Typography variant="h5" gutterBottom>Users</Typography>
       <Table>
@@ -54,6 +55,7 @@ function UsersPage({ currentUser }) {
         </TableBody>
       </Table>
     </Box>
+    </div>
   );
 }
 
