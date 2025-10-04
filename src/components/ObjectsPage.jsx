@@ -127,58 +127,102 @@ function ObjectsPage({ user }) {
     return () => unsub();
   }, []);
   const [qText, setQText] = useState("");
-  // Filter states
-  const [filterType, setFilterType] = useState("");
-  const [filterAstroType, setFilterAstroType] = useState("");
-  const [filterDating, setFilterDating] = useState("");
-  const [filterLocation, setFilterLocation] = useState("");
-
+  // Dynamic filter states
+  const [dynamicFilters, setDynamicFilters] = useState({});
+  const [availableFilterableFields, setAvailableFilterableFields] = useState([]);
+  const [availableSearchableFields, setAvailableSearchableFields] = useState([]);
+  
   // Pagination state
   const [page, setPage] = useState(1);
   const itemsPerPage = 20;
 
-  // Get unique values for dropdowns
-  const typeOptions = useMemo(
-    () =>
-      Array.from(new Set(objects.map((o) => o.type).filter(Boolean))).sort(),
-    [objects]
-  );
-  const astroTypeOptions = useMemo(
-    () =>
-      Array.from(
-        new Set(objects.map((o) => o.astronomicalType).filter(Boolean))
-      ).sort(),
-    [objects]
-  );
-  const datingOptions = useMemo(
-    () =>
-      Array.from(new Set(objects.map((o) => o.dating).filter(Boolean))).sort(),
-    [objects]
-  );
-  const locationOptions = useMemo(
-    () =>
-      Array.from(
-        new Set(objects.map((o) => o.actualLocation).filter(Boolean))
-      ).sort(),
-    [objects]
-  );
+  // Update available filterable and searchable fields when objects change
+  useEffect(() => {
+    // Get available filterable fields from stored data
+    const getAvailableFilterableFields = () => {
+      if (objects.length > 0) {
+        // Look for an object with stored filterable fields configuration
+        const objectWithFilterableFields = objects.find(obj => obj._filterableFields && Array.isArray(obj._filterableFields));
+        if (objectWithFilterableFields) {
+          return objectWithFilterableFields._filterableFields;
+        }
+      }
+      // Fallback to empty array if no filterable fields configuration found
+      return [];
+    };
 
-  const [form, setForm] = useState({
-    no: "",
-    name: "",
-    type: "",
-    museographicIndex: "",
-    astronomicalType: "",
-    astronomicalUse: "",
-    dating: "",
-    findingLocalization: "",
-    actualLocation: "",
-    content: "",
-    links: "",
-    stateOfPreservation: "",
-    references: "",
-    transliterations: "",
-  });
+    // Get available searchable fields from stored data
+    const getAvailableSearchableFields = () => {
+      if (objects.length > 0) {
+        // Look for an object with stored searchable fields configuration
+        const objectWithSearchableFields = objects.find(obj => obj._searchableFields && Array.isArray(obj._searchableFields));
+        if (objectWithSearchableFields) {
+          return objectWithSearchableFields._searchableFields;
+        }
+        
+        // If no searchable fields configured, try to use field order as fallback
+        const objectWithFieldOrder = objects.find(obj => obj._fieldOrder && Array.isArray(obj._fieldOrder));
+        if (objectWithFieldOrder) {
+          // Use first few fields from field order as searchable fields
+          const fieldOrder = objectWithFieldOrder._fieldOrder;
+          return fieldOrder.slice(0, Math.min(5, fieldOrder.length)); // Use first 5 fields
+        }
+      }
+      // Final fallback to commonly used searchable fields if no configuration found
+      return ['name', 'type', 'content'];
+    };
+
+    const filterableFields = getAvailableFilterableFields();
+    setAvailableFilterableFields(filterableFields);
+    
+    const searchableFields = getAvailableSearchableFields();
+    setAvailableSearchableFields(searchableFields);
+    
+    // Initialize dynamic filters for each filterable field
+    const initialFilters = {};
+    filterableFields.forEach(field => {
+      initialFilters[field] = "";
+    });
+    setDynamicFilters(initialFilters);
+  }, [objects]);
+
+  // Generate filter options for each filterable field
+  const getFilterOptions = (fieldName) => {
+    return Array.from(
+      new Set(objects.map((o) => o[fieldName]).filter(Boolean))
+    ).sort();
+  };
+
+  // Get the stored field order from existing objects
+  const getStoredFieldOrder = () => {
+    if (objects.length > 0) {
+      // Look for an object with stored field order
+      const objectWithOrder = objects.find(obj => obj._fieldOrder && Array.isArray(obj._fieldOrder));
+      if (objectWithOrder) {
+        return objectWithOrder._fieldOrder;
+      }
+    }
+    // Fallback to default field order if no stored order found
+    return [
+      "no", "name", "type", "museographicIndex", "astronomicalType", 
+      "astronomicalUse", "dating", "findingLocalization", "actualLocation", 
+      "content", "links", "stateOfPreservation", "references", "transliterations"
+    ];
+  };
+
+  // Get current field order (dynamic based on stored data)
+  const currentFieldOrder = getStoredFieldOrder();
+
+  // Create dynamic form state based on field order
+  const createEmptyForm = () => {
+    const emptyForm = {};
+    currentFieldOrder.forEach(field => {
+      emptyForm[field] = "";
+    });
+    return emptyForm;
+  };
+
+  const [form, setForm] = useState(() => createEmptyForm());
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [images, setImages] = useState([]);
@@ -193,36 +237,47 @@ function ObjectsPage({ user }) {
   const filtered = useMemo(() => {
     let result = objects;
     const t = qText.trim().toLowerCase();
+    
     if (t) {
-      result = result.filter((o) =>
-        [
-          o.name,
-          o.type,
-          o.astronomicalType,
-          o.astronomicalUse,
-          o.content,
-          o.findingLocation,
-          o.actualLocation,
-        ]
-          .filter(Boolean)
-          .some((v) => String(v).toLowerCase().includes(t))
-      );
+      if (availableSearchableFields.length > 0) {
+        // Use configured searchable fields
+        result = result.filter((o) => {
+          const searchableValues = availableSearchableFields
+            .map(field => o[field])
+            .filter(Boolean);
+          
+          return searchableValues.some((v) => 
+            String(v).toLowerCase().includes(t)
+          );
+        });
+      } else {
+        // Fallback: search all non-metadata fields if no searchable fields configured
+        result = result.filter((o) => {
+          const allFields = Object.keys(o).filter(key => 
+            !key.startsWith('_') && 
+            key !== 'id' && 
+            key !== 'createdAt' && 
+            key !== 'createdBy' &&
+            key !== 'imageUrls'
+          );
+          
+          return allFields.some(field => {
+            const value = o[field];
+            return value && String(value).toLowerCase().includes(t);
+          });
+        });
+      }
     }
-    if (filterType) result = result.filter((o) => o.type === filterType);
-    if (filterAstroType)
-      result = result.filter((o) => o.astronomicalType === filterAstroType);
-    if (filterDating) result = result.filter((o) => o.dating === filterDating);
-    if (filterLocation)
-      result = result.filter((o) => o.actualLocation === filterLocation);
+    
+    // Apply dynamic filters
+    Object.entries(dynamicFilters).forEach(([fieldName, filterValue]) => {
+      if (filterValue) {
+        result = result.filter((o) => o[fieldName] === filterValue);
+      }
+    });
+    
     return result;
-  }, [
-    qText,
-    objects,
-    filterType,
-    filterAstroType,
-    filterDating,
-    filterLocation,
-  ]);
+  }, [qText, objects, dynamicFilters, availableSearchableFields]);
 
   // Pagination logic
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
@@ -235,11 +290,16 @@ function ObjectsPage({ user }) {
   // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1);
-  }, [qText, filterType, filterAstroType, filterDating, filterLocation]);
+  }, [qText, dynamicFilters]);
 
   const handleAdd = async () => {
-    if (!form.name.trim()) {
-      setSnack({ open: true, msg: "Name is required", severity: "warning" });
+    // Find a name-like field for validation
+    const nameField = currentFieldOrder.find(field => 
+      field.toLowerCase().includes('name') || field.toLowerCase().includes('title')
+    ) || currentFieldOrder[1]; // fallback to second field if no name field found
+    
+    if (!form[nameField] || !form[nameField].trim()) {
+      setSnack({ open: true, msg: `${nameField} is required`, severity: "warning" });
       return;
     }
     setUploading(true);
@@ -259,65 +319,28 @@ function ObjectsPage({ user }) {
           uploadedUrls.push(img.url);
         }
       }
+
+      // Create document data with dynamic fields in correct order
+      const docData = {};
+      currentFieldOrder.forEach(field => {
+        docData[field] = (form[field] || "").trim();
+      });
+      docData.images = uploadedUrls;
+      docData._fieldOrder = currentFieldOrder; // Store field order
+
       if (editId) {
         // Update existing object
-        await updateDoc(doc(db, "objects", editId), {
-          no: form.no.trim(),
-          name: form.name.trim(),
-          type: form.type.trim(),
-          museographicIndex: form.museographicIndex.trim(),
-          astronomicalType: form.astronomicalType.trim(),
-          astronomicalUse: form.astronomicalUse.trim(),
-          dating: form.dating.trim(),
-          findingLocalization: form.findingLocalization.trim(),
-          actualLocation: form.actualLocation.trim(),
-          content: form.content.trim(),
-          links: form.links.trim(),
-          stateOfPreservation: form.stateOfPreservation.trim(),
-          references: form.references.trim(),
-          transliterations: form.transliterations.trim(),
-          images: uploadedUrls,
-        });
+        await updateDoc(doc(db, "objects", editId), docData);
         setSnack({ open: true, msg: "Object updated", severity: "success" });
       } else {
         // Add new object
-        await addDoc(collection(db, "objects"), {
-          no: form.no.trim(),
-          name: form.name.trim(),
-          type: form.type.trim(),
-          museographicIndex: form.museographicIndex.trim(),
-          astronomicalType: form.astronomicalType.trim(),
-          astronomicalUse: form.astronomicalUse.trim(),
-          dating: form.dating.trim(),
-          findingLocalization: form.findingLocalization.trim(),
-          actualLocation: form.actualLocation.trim(),
-          content: form.content.trim(),
-          links: form.links.trim(),
-          stateOfPreservation: form.stateOfPreservation.trim(),
-          references: form.references.trim(),
-          transliterations: form.transliterations.trim(),
-          images: uploadedUrls,
-          createdBy: user?.uid || null,
-          createdAt: serverTimestamp(),
-        });
+        docData.createdBy = user?.uid || null;
+        docData.createdAt = serverTimestamp();
+        await addDoc(collection(db, "objects"), docData);
         setSnack({ open: true, msg: "Object added", severity: "success" });
       }
-      setForm({
-        no: "",
-        name: "",
-        type: "",
-        museographicIndex: "",
-        astronomicalType: "",
-        astronomicalUse: "",
-        dating: "",
-        findingLocalization: "",
-        actualLocation: "",
-        content: "",
-        links: "",
-        stateOfPreservation: "",
-        references: "",
-        transliterations: "",
-      });
+      
+      setForm(createEmptyForm());
       setImages([]);
       setShowForm(false);
       setEditId(null);
@@ -329,22 +352,13 @@ function ObjectsPage({ user }) {
   };
 
   const handleEdit = (obj) => {
-    setForm({
-      no: obj.no || "",
-      name: obj.name || "",
-      type: obj.type || "",
-      museographicIndex: obj.museographicIndex || "",
-      astronomicalType: obj.astronomicalType || "",
-      astronomicalUse: obj.astronomicalUse || "",
-      dating: obj.dating || "",
-      findingLocalization: obj.findingLocalization || "",
-      actualLocation: obj.actualLocation || "",
-      content: obj.content || "",
-      links: obj.links || "",
-      stateOfPreservation: obj.stateOfPreservation || "",
-      references: obj.references || "",
-      transliterations: obj.transliterations || "",
+    // Create form data with dynamic field order
+    const editForm = {};
+    currentFieldOrder.forEach(field => {
+      editForm[field] = obj[field] || "";
     });
+    setForm(editForm);
+    
     // Prefill images state with URLs for editing
     setImages(
       Array.isArray(obj.images) ? obj.images.map((url) => ({ url })) : []
@@ -450,80 +464,37 @@ function ObjectsPage({ user }) {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", sm: "repeat(4, 1fr)" },
+            gridTemplateColumns: { 
+              xs: "1fr", 
+              sm: availableFilterableFields.length <= 2 ? `repeat(${availableFilterableFields.length}, 1fr)` : "repeat(4, 1fr)" 
+            },
             gap: 2,
             mb: 2,
             width: "100%",
           }}
         >
-          <FormControl size="small" sx={{ width: "100%" }}>
-            <InputLabel>Object Type</InputLabel>
-            <Select
-              label="Object Type"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            >
-              <MenuItem value="">
-                <em>All</em>
-              </MenuItem>
-              {typeOptions.map((opt) => (
-                <MenuItem key={opt} value={opt}>
-                  {opt}
+          {availableFilterableFields.map((fieldName) => (
+            <FormControl key={fieldName} size="small" sx={{ width: "100%" }}>
+              <InputLabel>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1')}</InputLabel>
+              <Select
+                label={fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1')}
+                value={dynamicFilters[fieldName] || ""}
+                onChange={(e) => setDynamicFilters(prev => ({
+                  ...prev,
+                  [fieldName]: e.target.value
+                }))}
+              >
+                <MenuItem value="">
+                  <em>All</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl size="small" sx={{ width: "100%" }}>
-            <InputLabel>Astronomical Type</InputLabel>
-            <Select
-              label="Astronomical Type"
-              value={filterAstroType}
-              onChange={(e) => setFilterAstroType(e.target.value)}
-            >
-              <MenuItem value="">
-                <em>All</em>
-              </MenuItem>
-              {astroTypeOptions.map((opt) => (
-                <MenuItem key={opt} value={opt}>
-                  {opt}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl size="small" sx={{ width: "100%" }}>
-            <InputLabel>Dating</InputLabel>
-            <Select
-              label="Dating"
-              value={filterDating}
-              onChange={(e) => setFilterDating(e.target.value)}
-            >
-              <MenuItem value="">
-                <em>All</em>
-              </MenuItem>
-              {datingOptions.map((opt) => (
-                <MenuItem key={opt} value={opt}>
-                  {opt}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl size="small" sx={{ width: "100%" }}>
-            <InputLabel>Actual Location</InputLabel>
-            <Select
-              label="Actual Location"
-              value={filterLocation}
-              onChange={(e) => setFilterLocation(e.target.value)}
-            >
-              <MenuItem value="">
-                <em>All</em>
-              </MenuItem>
-              {locationOptions.map((opt) => (
-                <MenuItem key={opt} value={opt}>
-                  {opt}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                {getFilterOptions(fieldName).map((opt) => (
+                  <MenuItem key={opt} value={opt}>
+                    {opt}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          ))}
         </Box>
 
         {canEdit && !showForm && (
@@ -534,22 +505,7 @@ function ObjectsPage({ user }) {
             onClick={() => {
               setShowForm(true);
               setEditId(null);
-              setForm({
-                no: "",
-                name: "",
-                type: "",
-                museographicIndex: "",
-                astronomicalType: "",
-                astronomicalUse: "",
-                dating: "",
-                findingLocalization: "",
-                actualLocation: "",
-                content: "",
-                links: "",
-                stateOfPreservation: "",
-                references: "",
-                transliterations: "",
-              });
+              setForm(createEmptyForm());
             }}
           >
             <AddIcon />
@@ -579,6 +535,7 @@ function ObjectsPage({ user }) {
                     images={images}
                     setImages={setImages}
                     uploading={uploading}
+                    fieldOrder={currentFieldOrder}
                   />
                 </Box>
               ) : viewObj && viewObj.id === o.id ? (
@@ -775,6 +732,7 @@ function ObjectsPage({ user }) {
                   images={images}
                   setImages={setImages}
                   uploading={uploading}
+                  fieldOrder={currentFieldOrder}
                 />
               </Box>
             )}

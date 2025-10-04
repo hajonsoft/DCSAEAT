@@ -28,6 +28,8 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
   const [csvFields, setCsvFields] = useState([]);
   const [importing, setImporting] = useState(false);
   const [rawCsvText, setRawCsvText] = useState(""); // Store the raw CSV text
+  const [filterableFields, setFilterableFields] = useState([]); // Store which fields should be filterable
+  const [searchableFields, setSearchableFields] = useState([]); // Store which fields should be searchable
 
   // Expose methods to parent component
   useImperativeHandle(ref, () => ({
@@ -220,6 +222,16 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
       console.log("Processing", lines.length - 1, "data rows with headers:", headers);
       console.log("Using delimiter:", delimiter);
       console.log("Expected field count:", headers.length);
+      console.log("Filterable fields:", filterableFields.length, filterableFields);
+      console.log("Searchable fields:", searchableFields.length, searchableFields);
+
+      // Validate field configurations
+      if (filterableFields.some(field => !headers.includes(field))) {
+        console.warn("Some filterable fields not found in CSV headers");
+      }
+      if (searchableFields.some(field => !headers.includes(field))) {
+        console.warn("Some searchable fields not found in CSV headers");
+      }
 
       let totalRows = 0;
       let processedRows = 0;
@@ -283,10 +295,12 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
           headers.forEach(header => {
             orderedDoc[header] = obj[header];
           });
-          // Add metadata fields including field order
+          // Add metadata fields including field order and filterable fields
           orderedDoc.createdBy = user.uid;
           orderedDoc.createdAt = serverTimestamp();
           orderedDoc._fieldOrder = headers; // Store original CSV field order
+          orderedDoc._filterableFields = filterableFields; // Store filterable fields configuration
+          orderedDoc._searchableFields = searchableFields; // Store searchable fields configuration
           
                     // Attempt to add to Firestore
           await addDoc(collection(db, "objects"), orderedDoc);
@@ -387,6 +401,62 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
               <Alert severity="warning" sx={{ mb: 2 }}>
                 Blue chips are known fields. Gray chips are new fields that will be added to the database.
               </Alert>
+
+              <Alert severity="success" sx={{ mb: 3 }}>
+                <strong>Field Configuration:</strong> Select filterable fields (primary blue) for dropdown filters and searchable fields (secondary purple) for text search. These settings will be saved and used throughout the application.
+              </Alert>
+
+              {/* Filterable Fields Selection */}
+              <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
+                Select Filterable Fields ({filterableFields.length} selected)
+              </Typography>
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Choose which fields should have filter dropdowns in the main interface. These fields will have unique value lists for filtering.
+              </Alert>
+              <Box sx={{ mb: 3, display: "flex", flexWrap: "wrap", gap: 1 }}>
+                {csvFields.map((field, idx) => (
+                  <Chip
+                    key={idx}
+                    label={field}
+                    clickable
+                    color={filterableFields.includes(field) ? "primary" : "default"}
+                    variant={filterableFields.includes(field) ? "filled" : "outlined"}
+                    onClick={() => {
+                      setFilterableFields(prev => 
+                        prev.includes(field) 
+                          ? prev.filter(f => f !== field)
+                          : [...prev, field]
+                      );
+                    }}
+                  />
+                ))}
+              </Box>
+
+              {/* Searchable Fields Selection */}
+              <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
+                Select Searchable Fields ({searchableFields.length} selected)
+              </Typography>
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Choose which fields should be included in text search. When users search, the search will look through these selected fields.
+              </Alert>
+              <Box sx={{ mb: 3, display: "flex", flexWrap: "wrap", gap: 1 }}>
+                {csvFields.map((field, idx) => (
+                  <Chip
+                    key={idx}
+                    label={field}
+                    clickable
+                    color={searchableFields.includes(field) ? "secondary" : "default"}
+                    variant={searchableFields.includes(field) ? "filled" : "outlined"}
+                    onClick={() => {
+                      setSearchableFields(prev => 
+                        prev.includes(field) 
+                          ? prev.filter(f => f !== field)
+                          : [...prev, field]
+                      );
+                    }}
+                  />
+                ))}
+              </Box>
 
               {/* Data Preview */}
               <Typography variant="h6" gutterBottom>

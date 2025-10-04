@@ -8,27 +8,112 @@ import CloseIcon from "@mui/icons-material/Close";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEditId, images, setImages, uploading, readOnly }) {
+function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEditId, images, setImages, uploading, readOnly, fieldOrder }) {
   // --- OpenAI analysis state ---
   const [aiOpen, setAiOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
   const [aiResult, setAiResult] = useState("");
 
-  const importantFields = [
-    { label: "Name", value: form.name },
-    { label: "Type", value: form.type },
-    { label: "Museographic Index", value: form.museographicIndex },
-    { label: "Astronomical Type", value: form.astronomicalType },
-    { label: "Use (Astronomical, Cosmographic, Ritual, etc…)", value: form.astronomicalUse },
-    { label: "Dating", value: form.dating },
-    { label: "Finding Localization", value: form.findingLocalization },
-    { label: "Actual Location", value: form.actualLocation },
-    { label: "Content", value: form.content },
-    { label: "State of Preservation", value: form.stateOfPreservation },
-    { label: "References", value: form.references },
-    { label: "Transliterations", value: form.transliterations },
+  // Use fieldOrder if provided, otherwise fallback to default fields
+  const currentFieldOrder = fieldOrder || [
+    "no", "name", "type", "museographicIndex", "astronomicalType", 
+    "astronomicalUse", "dating", "findingLocalization", "actualLocation", 
+    "content", "links", "stateOfPreservation", "references", "transliterations"
   ];
+
+  // Function to get user-friendly field labels
+  const getFieldLabel = (fieldName) => {
+    const labelMap = {
+      "no": "No.",
+      "name": "Name of Object",
+      "type": "Type of Object", 
+      "museographicIndex": "Museographic Index",
+      "astronomicalType": "Astronomical Type",
+      "astronomicalUse": "Use (Astronomical, Cosmographic, Ritual, etc…)",
+      "dating": "Dating",
+      "findingLocalization": "Finding Localization",
+      "actualLocation": "Actual Location",
+      "content": "Content",
+      "links": "Links",
+      "stateOfPreservation": "State of Preservation",
+      "references": "References",
+      "transliterations": "Transliteration(s)",
+      // Handle CSV field names that might be different
+      "No": "No.",
+      "Name of Object": "Name of Object",
+      "Type of Object": "Type of Object",
+      "Museographic index": "Museographic Index",
+      "Astronomical type": "Astronomical Type",
+      "Astronomical use": "Astronomical Use",
+      "Dating": "Dating",
+      "Finding localization": "Finding Localization",
+      "Actual location": "Actual Location",
+      "Content": "Content",
+      "Links": "Links",
+      "State of preservation": "State of Preservation",
+      "References": "References",
+      "Transliterration(s)": "Transliteration(s)",
+    };
+    return labelMap[fieldName] || fieldName;
+  };
+
+  // Function to get field placeholder
+  const getFieldPlaceholder = (fieldName) => {
+    const placeholderMap = {
+      "no": "e.g., 1029",
+      "name": "e.g., Ram's head, Ichneumon, Pectoral",
+      "type": "e.g., Statue, Pectoral",
+      "museographicIndex": "e.g., 1029, 1062, 2021",
+      "astronomicalType": "e.g., Amun-Ra, Incarnation of Atum, Sun rising",
+      "astronomicalUse": "e.g., Ritual, Symbolism",
+      "dating": "e.g., 20th dynasty, Late period, 19th dynasty?",
+      "findingLocalization": "e.g., Unknown",
+      "actualLocation": "e.g., Kunsthistorisches Museum Vienna",
+      "content": "e.g., Description, notes",
+      "links": "e.g., https://globalegyptianmuseum.org/detail.aspx?id=4531",
+      "stateOfPreservation": "e.g., good, damaged",
+      "references": "e.g., Bibliography, museum records",
+      "transliterations": "e.g., Hieroglyphic, Demotic, Coptic",
+      // Handle CSV variations
+      "No": "e.g., 1029",
+      "Name of Object": "e.g., Ram's head, Ichneumon, Pectoral",
+      "Type of Object": "e.g., Statue, Pectoral",
+      "Museographic index": "e.g., 1029, 1062, 2021",
+      "Astronomical type": "e.g., Amun-Ra, Incarnation of Atum",
+      "Astronomical use": "e.g., Ritual, Symbolism",
+      "Dating": "e.g., 20th dynasty, Late period",
+      "Finding localization": "e.g., Unknown",
+      "Actual location": "e.g., Museum name",
+      "Content": "e.g., Description, notes",
+      "Links": "e.g., https://example.com",
+      "State of preservation": "e.g., good, damaged",
+      "References": "e.g., Bibliography",
+      "Transliterration(s)": "e.g., Hieroglyphic text",
+    };
+    return placeholderMap[fieldName] || "";
+  };
+
+  // Function to determine if field should be multiline
+  const isMultilineField = (fieldName) => {
+    return ["content", "links", "references", "transliterations"].includes(fieldName.toLowerCase()) ||
+           fieldName.toLowerCase().includes("content") ||
+           fieldName.toLowerCase().includes("links") ||
+           fieldName.toLowerCase().includes("references") ||
+           fieldName.toLowerCase().includes("transliter");
+  };
+
+  // Function to determine if field is required
+  const isRequiredField = (fieldName) => {
+    return fieldName.toLowerCase().includes('name') || 
+           fieldName.toLowerCase().includes('title') ||
+           fieldName === currentFieldOrder[1]; // second field is usually important
+  };
+
+  const importantFields = currentFieldOrder.map(fieldName => ({
+    label: getFieldLabel(fieldName),
+    value: form[fieldName] || ""
+  })).filter(f => f.value && String(f.value).trim());
 
   // Helper to convert File/Blob to base64
   const fileToBase64 = (file) => {
@@ -130,20 +215,23 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
             {aiLoading ? "Analyzing..." : "Analyze with AI"}
           </Button>
         </Box>
-        <TextField label="No." value={form.no} onChange={e => setForm(f => ({ ...f, no: e.target.value }))} placeholder="e.g., 1029" type="number" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Name of Object" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Ram's head, Ichneumon, Pectoral" required size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Type of Object" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} placeholder="e.g., Statue, Pectoral" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Museographic Index" value={form.museographicIndex} onChange={e => setForm(f => ({ ...f, museographicIndex: e.target.value }))} placeholder="e.g., 1029, 1062, 2021" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Astronomical Type" value={form.astronomicalType} onChange={e => setForm(f => ({ ...f, astronomicalType: e.target.value }))} placeholder="e.g., Amun-Ra, Incarnation of Atum, Sun rising" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Use (Astronomical, Cosmographic, Ritual, etc…)" value={form.astronomicalUse} onChange={e => setForm(f => ({ ...f, astronomicalUse: e.target.value }))} placeholder="e.g., Ritual, Symbolism" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Dating" value={form.dating} onChange={e => setForm(f => ({ ...f, dating: e.target.value }))} placeholder="e.g., 20th dynasty, Late period, 19th dynasty?" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Finding Localization" value={form.findingLocalization} onChange={e => setForm(f => ({ ...f, findingLocalization: e.target.value }))} placeholder="e.g., Unknown" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Actual Location" value={form.actualLocation} onChange={e => setForm(f => ({ ...f, actualLocation: e.target.value }))} placeholder="e.g., Kunsthistorisches Museum Vienna" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Content" value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} placeholder="e.g., Description, notes" multiline minRows={2} size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Links" value={form.links} onChange={e => setForm(f => ({ ...f, links: e.target.value }))} placeholder="e.g., https://globalegyptianmuseum.org/detail.aspx?id=4531" multiline minRows={2} size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="State of Preservation" value={form.stateOfPreservation} onChange={e => setForm(f => ({ ...f, stateOfPreservation: e.target.value }))} placeholder="e.g., good, damaged" size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="References" value={form.references} onChange={e => setForm(f => ({ ...f, references: e.target.value }))} placeholder="e.g., Bibliography, museum records" multiline minRows={2} size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
-        <TextField label="Transliteration(s)" value={form.transliterations} onChange={e => setForm(f => ({ ...f, transliterations: e.target.value }))} placeholder="e.g., Hieroglyphic, Demotic, Coptic" multiline minRows={2} size="small" disabled={readOnly} InputProps={readOnly ? { readOnly: true } : {}} />
+        {/* Dynamic form fields based on field order */}
+        {currentFieldOrder.map((fieldName) => (
+          <TextField
+            key={fieldName}
+            label={getFieldLabel(fieldName)}
+            value={form[fieldName] || ""}
+            onChange={e => setForm(f => ({ ...f, [fieldName]: e.target.value }))}
+            placeholder={getFieldPlaceholder(fieldName)}
+            multiline={isMultilineField(fieldName)}
+            minRows={isMultilineField(fieldName) ? 2 : undefined}
+            required={isRequiredField(fieldName)}
+            size="small"
+            disabled={readOnly}
+            InputProps={readOnly ? { readOnly: true } : {}}
+            type={fieldName.toLowerCase().includes('no') ? "text" : "text"}
+          />
+        ))}
         {/* Image section */}
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle2" gutterBottom>Images (up to 3)</Typography>
