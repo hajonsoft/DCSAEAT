@@ -18,6 +18,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Pagination,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
@@ -44,6 +45,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import EditObjectForm from "./EditObjectForm";
+import CSVManager from "./CSVManager";
 
 function ObjectsPage({ user }) {
   const [viewObj, setViewObj] = useState(null);
@@ -52,94 +54,54 @@ function ObjectsPage({ user }) {
   const canEdit = role === "edit" || role === "superadmin";
   const addFormRef = React.useRef(null);
 
-  const importCSV = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const text = await file.text();
-    const lines = text.split(/\r?\n/).filter(Boolean);
-    if (lines.length < 2) return;
-    // Expected field order
-    const expectedFields = [
-      "no",
-      "name",
-      "type",
-      "museographicIndex",
-      "astronomicalType",
-      "astronomicalUse",
-      "dating",
-      "findingLocalization",
-      "actualLocation",
-      "content",
-      "links",
-      "stateOfPreservation",
-      "references",
-      "transliterations",
-    ];
-    for (let i = 1; i < lines.length; i++) {
-      const row = lines[i]
-        .split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
-        .map((cell) => cell.replace(/^"|"$/g, "").replace(/""/g, '"'));
-      if (row.length !== expectedFields.length) continue;
-      // Skip rows where all fields are empty
-      if (row.every((cell) => !cell.trim())) continue;
-      const obj = {};
-      expectedFields.forEach((f, idx) => {
-        obj[f] = row[idx];
-      });
-      // Skip rows with no name
-      if (!obj["name"] || obj["name"].trim() === "") continue;
-      try {
-        await addDoc(collection(db, "objects"), {
-          ...obj,
-          createdBy: user?.uid || null,
-          createdAt: serverTimestamp(),
-        });
-      } catch (e) {
-        console.error("Import error", e);
-      }
+  // CSV Manager component reference
+  const csvManagerRef = React.useRef(null);
+
+  // Get ordered field names for consistent display
+  const getOrderedFields = (obj) => {
+    // If object has stored field order, use it
+    if (obj._fieldOrder && Array.isArray(obj._fieldOrder)) {
+      return obj._fieldOrder;
     }
-    setSnack({ open: true, msg: "CSV import complete", severity: "success" });
-    event.target.value = "";
+    // Check if any object in the collection has stored field order
+    const objWithOrder = objects.find(o => o._fieldOrder && Array.isArray(o._fieldOrder));
+    if (objWithOrder) {
+      return objWithOrder._fieldOrder;
+    }
+    // Otherwise get all non-metadata fields and sort them
+    const fallbackFields = Object.keys(obj)
+      .filter(key => !key.startsWith('_') && key !== 'id' && key !== 'createdAt' && key !== 'createdBy')
+      .sort();
+    return fallbackFields;
   };
-  // ...existing code...
+
+  // Get the primary display field (usually the first meaningful field)
+  const getPrimaryField = (obj) => {
+    const orderedFields = getOrderedFields(obj);
+    // Try to find name-like fields first
+    const nameFields = orderedFields.filter(field => 
+      field.toLowerCase().includes('name') || 
+      field.toLowerCase().includes('title')
+    );
+    if (nameFields.length > 0) {
+      return obj[nameFields[0]] || "(untitled)";
+    }
+    // Otherwise use the first field
+    return obj[orderedFields[0]] || "(untitled)";
+  };
+
+  const importCSV = async (event) => {
+    // Use the new CSVManager
+    if (csvManagerRef.current) {
+      csvManagerRef.current.handleImport(event);
+    }
+  };
+
   const exportCSV = () => {
-    if (!filtered.length) return;
-    const fields = [
-      "no",
-      "name",
-      "type",
-      "museographicIndex",
-      "astronomicalType",
-      "astronomicalUse",
-      "dating",
-      "findingLocalization",
-      "actualLocation",
-      "content",
-      "links",
-      "stateOfPreservation",
-      "references",
-      "transliterations",
-    ];
-    const csvRows = [fields.join(",")];
-    filtered.forEach((obj) => {
-      const row = fields.map((f) => {
-        let val = obj[f] || "";
-        // Escape quotes and wrap in quotes
-        val = String(val).replace(/"/g, '""');
-        return `"${val}"`;
-      });
-      csvRows.push(row.join(","));
-    });
-    const csvContent = csvRows.join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "objects.csv";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // Use the new CSVManager
+    if (csvManagerRef.current) {
+      csvManagerRef.current.handleExport();
+    }
   };
   const [loading, setLoading] = useState(true);
   const [objects, setObjects] = useState([]);
@@ -149,7 +111,8 @@ function ObjectsPage({ user }) {
     const unsub = onSnapshot(
       q,
       (snapshot) => {
-        setObjects(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        const loadedObjects = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setObjects(loadedObjects);
         setLoading(false);
       },
       (err) => {
@@ -169,6 +132,10 @@ function ObjectsPage({ user }) {
   const [filterAstroType, setFilterAstroType] = useState("");
   const [filterDating, setFilterDating] = useState("");
   const [filterLocation, setFilterLocation] = useState("");
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
   // Get unique values for dropdowns
   const typeOptions = useMemo(
@@ -256,6 +223,19 @@ function ObjectsPage({ user }) {
     filterDating,
     filterLocation,
   ]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filtered.slice(startIndex, endIndex);
+  }, [filtered, page, itemsPerPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [qText, filterType, filterAstroType, filterDating, filterLocation]);
 
   const handleAdd = async () => {
     if (!form.name.trim()) {
@@ -419,7 +399,15 @@ function ObjectsPage({ user }) {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              sm: role === "superadmin" ? "1fr auto auto" : "1fr auto",
+              sm: (() => {
+                // Determine grid layout based on which buttons to show
+                const showExport = (role === "view" || role === "edit" || role === "superadmin") && objects.length > 0;
+                const showImport = role === "superadmin" && objects.length === 0;
+                
+                if (showExport && showImport) return "1fr auto auto";
+                if (showExport || showImport) return "1fr auto";
+                return "1fr";
+              })(),
             },
             gap: 2,
             alignItems: "center",
@@ -437,14 +425,16 @@ function ObjectsPage({ user }) {
             }}
             sx={{ width: "100%" }}
           />
-          {(role === "view" || role === "edit" || role === "superadmin") && (
+          {/* Show export button only if user has permission AND there is data */}
+          {(role === "view" || role === "edit" || role === "superadmin") && objects.length > 0 && (
             <Tooltip title="Export CSV">
               <IconButton color="primary" onClick={exportCSV} sx={{}}>
                 <FileDownloadIcon />
               </IconButton>
             </Tooltip>
           )}
-          {role === "superadmin" && (
+          {/* Show import button only if user is superadmin AND there is no data */}
+          {role === "superadmin" && objects.length === 0 && (
             <Button
               variant="outlined"
               component="label"
@@ -576,7 +566,7 @@ function ObjectsPage({ user }) {
           </Typography>
         ) : (
           <List dense>
-            {filtered.map((o) =>
+            {paginatedData.map((o) =>
               editId === o.id ? (
                 <Box key={o.id} sx={{ mb: 2 }}>
                   <EditObjectForm
@@ -757,11 +747,16 @@ function ObjectsPage({ user }) {
                     )}
                   </Box>
                   <ListItemText
-                    primary={o.name || "(untitled)"}
+                    primary={getPrimaryField(o)}
                     secondary={
-                      [o.astronomicalType, o.astronomicalUse]
-                        .filter(Boolean)
-                        .join(" • ") || null
+                      (() => {
+                        const orderedFields = getOrderedFields(o);
+                        // Show the first few non-empty fields after the primary field
+                        const secondaryFields = orderedFields.slice(1, 4)
+                          .map(field => o[field])
+                          .filter(Boolean);
+                        return secondaryFields.length > 0 ? secondaryFields.join(" • ") : null;
+                      })()
                     }
                   />
                 </ListItem>
@@ -786,6 +781,26 @@ function ObjectsPage({ user }) {
           </List>
         )}
 
+        {/* Pagination and Results Info */}
+        {filtered.length > 0 && (
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              Showing {((page - 1) * itemsPerPage) + 1}-{Math.min(page * itemsPerPage, filtered.length)} of {filtered.length} objects
+            </Typography>
+            {totalPages > 1 && (
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={(event, value) => setPage(value)}
+                color="primary"
+                size="large"
+                showFirstButton
+                showLastButton
+              />
+            )}
+          </Box>
+        )}
+
         <Snackbar
           open={snack.open}
           autoHideDuration={3000}
@@ -799,6 +814,15 @@ function ObjectsPage({ user }) {
             {snack.msg}
           </Alert>
         </Snackbar>
+
+        {/* CSV Manager Component */}
+        <CSVManager
+          ref={csvManagerRef}
+          objects={filtered}
+          onImportSuccess={(message) => setSnack({ open: true, msg: message, severity: "success" })}
+          onError={(message) => setSnack({ open: true, msg: message, severity: "error" })}
+          user={user}
+        />
       </Container>
     </div>
   );
