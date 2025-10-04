@@ -168,8 +168,8 @@ function ObjectsPage({ user }) {
           return fieldOrder.slice(0, Math.min(5, fieldOrder.length)); // Use first 5 fields
         }
       }
-      // Final fallback to commonly used searchable fields if no configuration found
-      return ['name', 'type', 'content'];
+      // Final fallback: if no configuration at all, return empty array (will trigger fallback search)
+      return [];
     };
 
     const filterableFields = getAvailableFilterableFields();
@@ -202,12 +202,8 @@ function ObjectsPage({ user }) {
         return objectWithOrder._fieldOrder;
       }
     }
-    // Fallback to default field order if no stored order found
-    return [
-      "no", "name", "type", "museographicIndex", "astronomicalType", 
-      "astronomicalUse", "dating", "findingLocalization", "actualLocation", 
-      "content", "links", "stateOfPreservation", "references", "transliterations"
-    ];
+    // Return empty array if no stored order found - will show message to import CSV first
+    return [];
   };
 
   // Get current field order (dynamic based on stored data)
@@ -503,6 +499,15 @@ function ObjectsPage({ user }) {
             aria-label="add"
             sx={{ position: "fixed", bottom: 32, right: 32, zIndex: 1000 }}
             onClick={() => {
+              const fieldOrder = getStoredFieldOrder();
+              if (fieldOrder.length === 0) {
+                setSnack({
+                  open: true,
+                  msg: "Please import a CSV file first to configure the form fields",
+                  severity: "warning",
+                });
+                return;
+              }
               setShowForm(true);
               setEditId(null);
               setForm(createEmptyForm());
@@ -571,46 +576,56 @@ function ObjectsPage({ user }) {
                         ))}
                       </Box>
                     )}
-                  <Typography variant="subtitle2">No:</Typography>
-                  <Typography>{viewObj.no}</Typography>
-                  <Typography variant="subtitle2">Name:</Typography>
-                  <Typography>{viewObj.name}</Typography>
-                  <Typography variant="subtitle2">Type:</Typography>
-                  <Typography>{viewObj.type}</Typography>
-                  <Typography variant="subtitle2">
-                    Museographic Index:
-                  </Typography>
-                  <Typography>{viewObj.museographicIndex}</Typography>
-                  <Typography variant="subtitle2">
-                    Astronomical Type:
-                  </Typography>
-                  <Typography>{viewObj.astronomicalType}</Typography>
-                  <Typography variant="subtitle2">
-                    Use (Astronomical, Cosmographic, Ritual, etc…):
-                  </Typography>
-                  <Typography>{viewObj.astronomicalUse}</Typography>
-                  <Typography variant="subtitle2">Dating:</Typography>
-                  <Typography>{viewObj.dating}</Typography>
-                  <Typography variant="subtitle2">
-                    Finding Localization:
-                  </Typography>
-                  <Typography>{viewObj.findingLocalization}</Typography>
-                  <Typography variant="subtitle2">Actual Location:</Typography>
-                  <Typography>{viewObj.actualLocation}</Typography>
-                  <Typography variant="subtitle2">Content:</Typography>
-                  <Typography>{viewObj.content}</Typography>
-                  <Typography variant="subtitle2">Links:</Typography>
-                  <Typography sx={{ wordBreak: "break-all" }}>
-                    {viewObj.links}
-                  </Typography>
-                  <Typography variant="subtitle2">
-                    State of Preservation:
-                  </Typography>
-                  <Typography>{viewObj.stateOfPreservation}</Typography>
-                  <Typography variant="subtitle2">References:</Typography>
-                  <Typography>{viewObj.references}</Typography>
-                  <Typography variant="subtitle2">Transliterations:</Typography>
-                  <Typography>{viewObj.transliterations}</Typography>
+                  
+                  {/* Dynamic field display based on field order or all available fields */}
+                  {(() => {
+                    // Use stored field order if available, otherwise show all non-metadata fields
+                    const fieldsToShow = viewObj._fieldOrder || 
+                      Object.keys(viewObj).filter(key => 
+                        !key.startsWith('_') && 
+                        key !== 'id' && 
+                        key !== 'createdAt' && 
+                        key !== 'createdBy' && 
+                        key !== 'images' &&
+                        key !== 'imageUrls'
+                      );
+                    
+                    return fieldsToShow.map((fieldName) => {
+                      const value = viewObj[fieldName];
+                      
+                      // Generate user-friendly label
+                      const label = fieldName
+                        .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+                        .replace(/[_-]/g, ' ') // Replace underscores and hyphens with spaces
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                        .join(' ')
+                        .trim();
+                      
+                      const isLongText = fieldName.toLowerCase().includes('content') ||
+                                        fieldName.toLowerCase().includes('link') ||
+                                        fieldName.toLowerCase().includes('reference') ||
+                                        fieldName.toLowerCase().includes('transliter');
+                      
+                      // Show field even if empty, but with different styling
+                      const displayValue = value ? String(value) : '(empty)';
+                      const isEmpty = !value || String(value).trim() === '';
+                      
+                      return (
+                        <React.Fragment key={fieldName}>
+                          <Typography variant="subtitle2">{label}:</Typography>
+                          <Typography 
+                            sx={{
+                              ...(isLongText ? { wordBreak: "break-all" } : {}),
+                              ...(isEmpty ? { fontStyle: 'italic', color: 'text.secondary' } : {})
+                            }}
+                          >
+                            {displayValue}
+                          </Typography>
+                        </React.Fragment>
+                      );
+                    }).filter(Boolean);
+                  })()}
                   <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                     <Button
                       variant="contained"

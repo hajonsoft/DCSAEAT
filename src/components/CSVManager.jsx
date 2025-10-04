@@ -128,23 +128,8 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
       return Array.from(fieldSet).sort();
     }
     
-    // Default fallback fields in preferred order
-    return [
-      "No",
-      "Name of Object",
-      "Type of Object",
-      "Museographic index",
-      "Astronomical type",
-      "Astronomical use",
-      "Dating",
-      "Finding localization",
-      "Actual location",
-      "Content",
-      "Links",
-      "State of preservation",
-      "References",
-      "Transliterration(s)",
-    ];
+    // No default fallback - return empty array if no existing data
+    return [];
   }, [objects, csvFields]);
 
   const handleFileSelect = async (event) => {
@@ -398,8 +383,8 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
                 Fields will be imported and stored in the same order as they appear in your CSV file.
               </Alert>
 
-              <Alert severity="warning" sx={{ mb: 2 }}>
-                Blue chips are known fields. Gray chips are new fields that will be added to the database.
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Blue chips are fields that already exist in your database. Gray chips are new fields that will be added.
               </Alert>
 
               <Alert severity="success" sx={{ mb: 3 }}>

@@ -15,99 +15,85 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
   const [aiError, setAiError] = useState("");
   const [aiResult, setAiResult] = useState("");
 
-  // Use fieldOrder if provided, otherwise fallback to default fields
-  const currentFieldOrder = fieldOrder || [
-    "no", "name", "type", "museographicIndex", "astronomicalType", 
-    "astronomicalUse", "dating", "findingLocalization", "actualLocation", 
-    "content", "links", "stateOfPreservation", "references", "transliterations"
-  ];
+  // Use fieldOrder if provided, otherwise use empty array (will be handled by parent)
+  const currentFieldOrder = fieldOrder || [];
 
-  // Function to get user-friendly field labels
+  // Function to get user-friendly field labels dynamically
   const getFieldLabel = (fieldName) => {
-    const labelMap = {
-      "no": "No.",
-      "name": "Name of Object",
-      "type": "Type of Object", 
-      "museographicIndex": "Museographic Index",
-      "astronomicalType": "Astronomical Type",
-      "astronomicalUse": "Use (Astronomical, Cosmographic, Ritual, etc…)",
-      "dating": "Dating",
-      "findingLocalization": "Finding Localization",
-      "actualLocation": "Actual Location",
-      "content": "Content",
-      "links": "Links",
-      "stateOfPreservation": "State of Preservation",
-      "references": "References",
-      "transliterations": "Transliteration(s)",
-      // Handle CSV field names that might be different
-      "No": "No.",
-      "Name of Object": "Name of Object",
-      "Type of Object": "Type of Object",
-      "Museographic index": "Museographic Index",
-      "Astronomical type": "Astronomical Type",
-      "Astronomical use": "Astronomical Use",
-      "Dating": "Dating",
-      "Finding localization": "Finding Localization",
-      "Actual location": "Actual Location",
-      "Content": "Content",
-      "Links": "Links",
-      "State of preservation": "State of Preservation",
-      "References": "References",
-      "Transliterration(s)": "Transliteration(s)",
-    };
-    return labelMap[fieldName] || fieldName;
+    if (!fieldName) return '';
+    
+    // Convert camelCase or snake_case to Title Case
+    return fieldName
+      .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+      .replace(/[_-]/g, ' ') // Replace underscores and hyphens with spaces
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ')
+      .trim();
   };
 
-  // Function to get field placeholder
+  // Function to get field placeholder dynamically
   const getFieldPlaceholder = (fieldName) => {
-    const placeholderMap = {
-      "no": "e.g., 1029",
-      "name": "e.g., Ram's head, Ichneumon, Pectoral",
-      "type": "e.g., Statue, Pectoral",
-      "museographicIndex": "e.g., 1029, 1062, 2021",
-      "astronomicalType": "e.g., Amun-Ra, Incarnation of Atum, Sun rising",
-      "astronomicalUse": "e.g., Ritual, Symbolism",
-      "dating": "e.g., 20th dynasty, Late period, 19th dynasty?",
-      "findingLocalization": "e.g., Unknown",
-      "actualLocation": "e.g., Kunsthistorisches Museum Vienna",
-      "content": "e.g., Description, notes",
-      "links": "e.g., https://globalegyptianmuseum.org/detail.aspx?id=4531",
-      "stateOfPreservation": "e.g., good, damaged",
-      "references": "e.g., Bibliography, museum records",
-      "transliterations": "e.g., Hieroglyphic, Demotic, Coptic",
-      // Handle CSV variations
-      "No": "e.g., 1029",
-      "Name of Object": "e.g., Ram's head, Ichneumon, Pectoral",
-      "Type of Object": "e.g., Statue, Pectoral",
-      "Museographic index": "e.g., 1029, 1062, 2021",
-      "Astronomical type": "e.g., Amun-Ra, Incarnation of Atum",
-      "Astronomical use": "e.g., Ritual, Symbolism",
-      "Dating": "e.g., 20th dynasty, Late period",
-      "Finding localization": "e.g., Unknown",
-      "Actual location": "e.g., Museum name",
-      "Content": "e.g., Description, notes",
-      "Links": "e.g., https://example.com",
-      "State of preservation": "e.g., good, damaged",
-      "References": "e.g., Bibliography",
-      "Transliterration(s)": "e.g., Hieroglyphic text",
-    };
-    return placeholderMap[fieldName] || "";
+    if (!fieldName) return '';
+    
+    const lowerField = fieldName.toLowerCase();
+    
+    // Generate smart placeholders based on field name patterns
+    if (lowerField.includes('no') || lowerField.includes('number') || lowerField.includes('id')) {
+      return 'e.g., 1029, A001';
+    }
+    if (lowerField.includes('name') || lowerField.includes('title')) {
+      return 'e.g., Object name or title';
+    }
+    if (lowerField.includes('type') || lowerField.includes('category')) {
+      return 'e.g., Category or type';
+    }
+    if (lowerField.includes('date') || lowerField.includes('period')) {
+      return 'e.g., Date or period';
+    }
+    if (lowerField.includes('location') || lowerField.includes('place')) {
+      return 'e.g., Location or place';
+    }
+    if (lowerField.includes('link') || lowerField.includes('url')) {
+      return 'e.g., https://example.com';
+    }
+    if (lowerField.includes('content') || lowerField.includes('description') || lowerField.includes('note')) {
+      return 'e.g., Description or notes';
+    }
+    if (lowerField.includes('reference') || lowerField.includes('source')) {
+      return 'e.g., References or sources';
+    }
+    
+    // Default placeholder
+    return `Enter ${getFieldLabel(fieldName).toLowerCase()}`;
   };
 
-  // Function to determine if field should be multiline
+  // Function to determine if field should be multiline based on field name patterns
   const isMultilineField = (fieldName) => {
-    return ["content", "links", "references", "transliterations"].includes(fieldName.toLowerCase()) ||
-           fieldName.toLowerCase().includes("content") ||
-           fieldName.toLowerCase().includes("links") ||
-           fieldName.toLowerCase().includes("references") ||
-           fieldName.toLowerCase().includes("transliter");
+    if (!fieldName) return false;
+    const lowerField = fieldName.toLowerCase();
+    return lowerField.includes('content') ||
+           lowerField.includes('description') ||
+           lowerField.includes('note') ||
+           lowerField.includes('comment') ||
+           lowerField.includes('link') ||
+           lowerField.includes('reference') ||
+           lowerField.includes('transliter') ||
+           lowerField.includes('text');
   };
 
-  // Function to determine if field is required
+  // Function to determine if field is required based on position and name patterns
   const isRequiredField = (fieldName) => {
-    return fieldName.toLowerCase().includes('name') || 
-           fieldName.toLowerCase().includes('title') ||
-           fieldName === currentFieldOrder[1]; // second field is usually important
+    if (!fieldName || currentFieldOrder.length === 0) return false;
+    const lowerField = fieldName.toLowerCase();
+    
+    // First field is usually important (ID/number)
+    if (fieldName === currentFieldOrder[0]) return true;
+    
+    // Name/title fields are typically required
+    return lowerField.includes('name') || 
+           lowerField.includes('title') ||
+           (currentFieldOrder.length > 1 && fieldName === currentFieldOrder[1]); // Second field often important
   };
 
   const importantFields = currentFieldOrder.map(fieldName => ({
@@ -216,22 +202,28 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
           </Button>
         </Box>
         {/* Dynamic form fields based on field order */}
-        {currentFieldOrder.map((fieldName) => (
-          <TextField
-            key={fieldName}
-            label={getFieldLabel(fieldName)}
-            value={form[fieldName] || ""}
-            onChange={e => setForm(f => ({ ...f, [fieldName]: e.target.value }))}
-            placeholder={getFieldPlaceholder(fieldName)}
-            multiline={isMultilineField(fieldName)}
-            minRows={isMultilineField(fieldName) ? 2 : undefined}
-            required={isRequiredField(fieldName)}
-            size="small"
-            disabled={readOnly}
-            InputProps={readOnly ? { readOnly: true } : {}}
-            type={fieldName.toLowerCase().includes('no') ? "text" : "text"}
-          />
-        ))}
+        {currentFieldOrder.length > 0 ? (
+          currentFieldOrder.map((fieldName) => (
+            <TextField
+              key={fieldName}
+              label={getFieldLabel(fieldName)}
+              value={form[fieldName] || ""}
+              onChange={e => setForm(f => ({ ...f, [fieldName]: e.target.value }))}
+              placeholder={getFieldPlaceholder(fieldName)}
+              multiline={isMultilineField(fieldName)}
+              minRows={isMultilineField(fieldName) ? 2 : undefined}
+              required={isRequiredField(fieldName)}
+              size="small"
+              disabled={readOnly}
+              InputProps={readOnly ? { readOnly: true } : {}}
+              type="text"
+            />
+          ))
+        ) : (
+          <Typography color="text.secondary" sx={{ fontStyle: 'italic', textAlign: 'center', py: 2 }}>
+            No field configuration available. Please import a CSV file to set up the form fields.
+          </Typography>
+        )}
         {/* Image section */}
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle2" gutterBottom>Images (up to 3)</Typography>
