@@ -153,10 +153,10 @@ function EditObjectForm({ form, setForm, editId, handleAdd, setShowForm, setEdit
         .map(img => (typeof img === 'string' ? img : img.url))
         .filter(Boolean);
 
-      let instruction = "You are an expert Egyptologist. Analyze the following object entry and provide insights, suggestions, or highlight any inconsistencies or missing information. Be concise and factual.";
+      let instruction = "You are an expert analyst. Analyze the following data entry and provide insights, suggestions, or highlight any inconsistencies or missing information. Be concise and factual.";
       if (filteredImages.length > 0) {
         instruction +=
-          " For each image provided, attempt to read any hieroglyphs, describe the image in detail, and provide any insights or analysis you can about the depicted object(s).";
+          " For each image provided, describe the image in detail and provide any insights or analysis you can about the depicted content.";
       }
 
       // Only include image URLs in aiInput if there are no images being sent
