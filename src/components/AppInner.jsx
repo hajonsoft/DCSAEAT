@@ -66,7 +66,7 @@ function AppInner() {
     <BrowserRouter>
       <TopNav user={user} onLogin={login} onLogout={logout} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home user={user} />} />
         <Route path="/objects" element={<ObjectsPage user={user} />} />
         <Route path="/references" element={<References />} />
         <Route path="/users" element={<UsersPage currentUser={user} />} />

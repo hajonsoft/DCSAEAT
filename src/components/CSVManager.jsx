@@ -17,12 +17,18 @@ import {
   Alert,
   Chip,
   IconButton,
+  useMediaQuery,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
+import { useI18n } from "../i18n/I18nContext";
 
 const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref) => {
+  const { t } = useI18n();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [csvData, setCsvData] = useState(null);
   const [csvFields, setCsvFields] = useState([]);
@@ -68,7 +74,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
   // Handle export trigger from parent
   const handleExport = () => {
     if (!objects.length) {
-      if (onError) onError("No objects to export");
+      if (onError) onError(t("csv.noObjectsExport"));
       return;
     }
 
@@ -142,7 +148,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
       const lines = text.split(/\r?\n/).filter(Boolean);
       
       if (lines.length < 2) {
-        if (onError) onError("CSV file must have at least a header row and one data row");
+        if (onError) onError(t("csv.headerRequired"));
         return;
       }
 
@@ -159,7 +165,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
       setShowImportDialog(true);
     } catch (error) {
       console.error("Error reading CSV file:", error);
-      if (onError) onError("Error reading CSV file. Please check the file format.");
+      if (onError) onError(t("csv.readError"));
     }
 
     // Reset file input
@@ -168,7 +174,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
 
   const handleImportFromDialog = async () => {
     if (!csvData || !rawCsvText) {
-      if (onError) onError("No CSV data available for import");
+      if (onError) onError(t("csv.noData"));
       return;
     }
 
@@ -186,7 +192,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
       // Check if user is authenticated and has proper permissions
       if (!user?.uid) {
         console.error("User not authenticated:", user);
-        if (onError) onError("You must be logged in to import data");
+        if (onError) onError(t("csv.mustLogin"));
         setImporting(false);
         return;
       }
@@ -196,7 +202,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
       console.log("User role:", userRole);
       if (userRole !== "superadmin") {
         console.error("Insufficient permissions. User role:", userRole);
-        if (onError) onError("Only superadmin users can import CSV data");
+        if (onError) onError(t("csv.superadminOnly"));
         setImporting(false);
         return;
       }
@@ -292,7 +298,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
           importedCount++;
         } catch (rowError) {
           console.error(`Import error for row ${i}:`, rowError);
-          errors.push(`Row ${i}: ${rowError.message || 'Unknown error'}`);
+          errors.push(t("csv.rowError", { row: i, message: rowError.message || t("csv.unknownErrorShort") }));
         }
       }
 
@@ -313,29 +319,34 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
 
       // Report results
       if (errors.length > 0) {
-        const errorMessage = `Import completed with errors. Imported: ${importedCount}, Skipped: ${skippedCount}, Errors: ${errors.length}. First few errors: ${errors.slice(0, 3).join('; ')}`;
+        const errorMessage = t("csv.importCompleteErrors", {
+          imported: importedCount,
+          skipped: skippedCount,
+          errors: errors.length,
+          details: errors.slice(0, 3).join("; "),
+        });
         if (onError) onError(errorMessage);
       } else if (importedCount === 0) {
-        if (onError) onError(`No objects were imported. ${skippedCount} rows were skipped (empty or invalid data).`);
+        if (onError) onError(t("csv.noImported", { skipped: skippedCount }));
       } else {
-        const message = skippedCount > 0 
-          ? `CSV import complete: ${importedCount} objects imported, ${skippedCount} rows skipped`
-          : `CSV import complete: ${importedCount} objects imported`;
+        const message = skippedCount > 0
+          ? t("csv.importCompleteSkipped", { imported: importedCount, skipped: skippedCount })
+          : t("csv.importComplete", { imported: importedCount });
         if (onImportSuccess) onImportSuccess(message);
       }
     } catch (error) {
       console.error("Import error:", error);
-      let errorMessage = "Import failed: ";
-      
-      if (error.code === 'permission-denied') {
-        errorMessage += "You don't have permission to add objects to the database.";
-      } else if (error.code === 'unavailable') {
-        errorMessage += "Database is currently unavailable. Please try again later.";
+      let reason = t("csv.unknownError");
+
+      if (error.code === "permission-denied") {
+        reason = t("csv.permissionDenied");
+      } else if (error.code === "unavailable") {
+        reason = t("csv.unavailable");
       } else if (error.message) {
-        errorMessage += error.message;
-      } else {
-        errorMessage += "Unknown error occurred.";
+        reason = error.message;
       }
+
+      const errorMessage = t("csv.importFailed", { reason });
       
       if (onError) onError(errorMessage);
     }
@@ -347,10 +358,10 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
   return (
     <>
       {/* Import Preview Dialog */}
-      <Dialog open={showImportDialog} onClose={() => setShowImportDialog(false)} maxWidth="lg" fullWidth>
+      <Dialog open={showImportDialog} onClose={() => setShowImportDialog(false)} maxWidth="lg" fullWidth fullScreen={isMobile}>
         <DialogTitle>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            CSV Import Preview
+            {t("csv.importPreview")}
             <IconButton onClick={() => setShowImportDialog(false)}>
               <CloseIcon />
             </IconButton>
@@ -361,12 +372,12 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
           {csvData && (
             <>
               <Alert severity="info" sx={{ mb: 2 }}>
-                Found {csvData.totalRows} rows to import. Preview shows first 5 rows.
+                {t("csv.foundRows", { count: csvData.totalRows })}
               </Alert>
 
               {/* Field Mapping Info */}
               <Typography variant="h6" gutterBottom>
-                Detected Fields ({csvFields.length})
+                {t("csv.detectedFields", { count: csvFields.length })}
               </Typography>
               <Box sx={{ mb: 3, display: "flex", flexWrap: "wrap", gap: 1 }}>
                 {csvFields.map((field, idx) => (
@@ -380,23 +391,23 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
               </Box>
 
               <Alert severity="info" sx={{ mb: 2 }}>
-                Fields will be imported and stored in the same order as they appear in your CSV file.
+                {t("csv.fieldOrderNote")}
               </Alert>
 
               <Alert severity="info" sx={{ mb: 2 }}>
-                Blue chips are fields that already exist in your database. Gray chips are new fields that will be added.
+                {t("csv.chipNote")}
               </Alert>
 
               <Alert severity="success" sx={{ mb: 3 }}>
-                <strong>Field Configuration:</strong> Select filterable fields (primary blue) for dropdown filters and searchable fields (secondary purple) for text search. These settings will be saved and used throughout the application.
+                {t("csv.fieldConfigNote")}
               </Alert>
 
               {/* Filterable Fields Selection */}
               <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-                Select Filterable Fields ({filterableFields.length} selected)
+                {t("csv.selectFilterable", { count: filterableFields.length })}
               </Typography>
               <Alert severity="info" sx={{ mb: 2 }}>
-                Choose which fields should have filter dropdowns in the main interface. These fields will have unique value lists for filtering.
+                {t("csv.filterableHelp")}
               </Alert>
               <Box sx={{ mb: 3, display: "flex", flexWrap: "wrap", gap: 1 }}>
                 {csvFields.map((field, idx) => (
@@ -419,10 +430,10 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
 
               {/* Searchable Fields Selection */}
               <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-                Select Searchable Fields ({searchableFields.length} selected)
+                {t("csv.selectSearchable", { count: searchableFields.length })}
               </Typography>
               <Alert severity="info" sx={{ mb: 2 }}>
-                Choose which fields should be included in text search. When users search, the search will look through these selected fields.
+                {t("csv.searchableHelp")}
               </Alert>
               <Box sx={{ mb: 3, display: "flex", flexWrap: "wrap", gap: 1 }}>
                 {csvFields.map((field, idx) => (
@@ -445,7 +456,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
 
               {/* Data Preview */}
               <Typography variant="h6" gutterBottom>
-                Data Preview
+                {t("csv.dataPreview")}
               </Typography>
               <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
                 <Table stickyHeader size="small">
@@ -464,7 +475,7 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
                         {row.map((cell, cellIdx) => (
                           <TableCell key={cellIdx} sx={{ maxWidth: 200 }}>
                             <Typography variant="body2" noWrap title={cell}>
-                              {cell || <em style={{ opacity: 0.5 }}>empty</em>}
+                              {cell || <em style={{ opacity: 0.5 }}>{t("csv.empty")}</em>}
                             </Typography>
                           </TableCell>
                         ))}
@@ -478,13 +489,13 @@ const CSVManager = forwardRef(({ objects, user, onImportSuccess, onError }, ref)
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setShowImportDialog(false)}>Cancel</Button>
+          <Button onClick={() => setShowImportDialog(false)}>{t("csv.cancel")}</Button>
           <Button
             variant="contained"
             onClick={handleImportFromDialog}
             disabled={importing || !csvData}
           >
-            {importing ? "Importing..." : `Import ${csvData?.totalRows || 0} Objects`}
+            {importing ? t("csv.importing") : t("csv.importObjects", { count: csvData?.totalRows || 0 })}
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
-import { Table, TableHead, TableRow, TableCell, TableBody, Select, MenuItem, Typography, Box } from "@mui/material";
+import { Table, TableHead, TableRow, TableCell, TableBody, Select, MenuItem, Typography, Box, TableContainer, Paper } from "@mui/material";
+import { useI18n } from "../i18n/I18nContext";
 
-const ROLES = ["", "view", "edit", "superadmin"];
+const ROLE_VALUES = ["", "view", "edit", "superadmin"];
 
 function UsersPage({ currentUser }) {
+  const { t } = useI18n();
   const [users, setUsers] = useState([]);
+
+  const roleLabel = (role) => {
+    if (!role) return t("users.none");
+    return t(`users.${role}`);
+  };
 
   useEffect(() => {
     getDocs(collection(db, "users")).then(snapshot => {
@@ -20,40 +27,43 @@ function UsersPage({ currentUser }) {
   };
 
   if (!currentUser || currentUser.role !== "superadmin") {
-    return <Box sx={{ p: 4 }}><Typography>You do not have access to view users.</Typography></Box>;
+    return <Box sx={{ p: { xs: 2, md: 4 } }}><Typography>{t("users.noAccess")}</Typography></Box>;
   }
 
   return (
     <div style={{ backgroundColor: "rgb(204, 255, 255)", minHeight: "100vh" }}>
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h5" gutterBottom>Users</Typography>
-      <Table>
+    <Box sx={{ p: { xs: 2, md: 4 } }}>
+      <Typography variant="h5" gutterBottom>{t("users.title")}</Typography>
+      <TableContainer component={Paper} sx={{ overflowX: "auto", maxWidth: "100%" }}>
+      <Table size="small" sx={{ minWidth: 480 }}>
         <TableHead>
           <TableRow>
-            <TableCell>Email</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Role</TableCell>
+            <TableCell>{t("users.email")}</TableCell>
+            <TableCell>{t("users.name")}</TableCell>
+            <TableCell>{t("users.role")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {users.map(u => (
             <TableRow key={u.id}>
-              <TableCell>{u.email}</TableCell>
-              <TableCell>{u.displayName}</TableCell>
+              <TableCell sx={{ wordBreak: "break-word" }}>{u.email}</TableCell>
+              <TableCell sx={{ wordBreak: "break-word" }}>{u.displayName}</TableCell>
               <TableCell>
                 <Select
                   value={u.role}
                   onChange={e => handleRoleChange(u.id, e.target.value)}
                   disabled={currentUser.id === u.id}
                   size="small"
+                  sx={{ minWidth: 120, maxWidth: "100%" }}
                 >
-                  {ROLES.map(r => <MenuItem key={r} value={r}>{r || "none"}</MenuItem>)}
+                  {ROLE_VALUES.map(r => <MenuItem key={r} value={r}>{roleLabel(r)}</MenuItem>)}
                 </Select>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      </TableContainer>
     </Box>
     </div>
   );
